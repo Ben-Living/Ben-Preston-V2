@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import TopographyLines from '../components/TopographyLines.astro';
+---
+<Base title="Contact" currentPage="/contact">
+
+  <section class="v2-contact-hero">
+    <TopographyLines id="topo-contact" theme="stone" density={14} />
+    <div class="container topo-content">
+      <div class="v2-contact-grid">
+        <div>
+          <p style="font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-sage); margin-bottom: var(--space-6);" class="reveal">Contact</p>
+          <h1 class="v2-contact-heading reveal">I'm always open to a conversation with someone working on something that matters.</h1>
+          <div class="v2-contact-body reveal-group">
+            <p class="reveal">If anything on this site resonated, or if you have a project or idea you'd like to think through with someone, I'd genuinely welcome hearing from you.</p>
+            <p class="reveal">The simplest way to start is a 20-minute call — no pitch, no pressure, just a conversation to see if there's something worth exploring together.</p>
+          </div>
+        </div>
+        <div class="v2-contact-options reveal-group">
+          <div class="v2-contact-option reveal">
+            <p class="v2-contact-option__label">Schedule a call</p>
+            <div class="v2-contact-option__value">
+              <a href="https://cal.com/ben-preston" class="btn btn--dark" style="display: inline-flex; margin-bottom: var(--space-3);">Book 20 minutes</a>
+              <p style="font-size: 0.875rem; color: var(--color-text-muted);">No pitch. No pressure. Just a conversation.</p>
+            </div>
+          </div>
+          <div class="v2-contact-option reveal">
+            <p class="v2-contact-option__label">Email</p>
+            <p class="v2-contact-option__value"><a href="mailto:ben@ben-preston.com">ben@ben-preston.com</a></p>
+          </div>
+          <div class="v2-contact-option reveal">
+            <p class="v2-contact-option__label">Phone</p>
+            <p class="v2-contact-option__value"><a href="tel:+6422515348">(+64) 22 515 3480</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</Base>

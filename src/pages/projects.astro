@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import TopographyLines from '../components/TopographyLines.astro';
+
+const projects = [
+  { num: '01', tag: 'Development', title: 'Living Systems Development & Peachgrove East', years: '2024–present', body: 'In 2024, I co-founded Living Systems Development to do something I\'d been thinking about for years — showcase ways that the built environment can support thriving communities and ecologies. Peachgrove East is a 48-unit net-zero Passive House cohousing community in Hamilton, New Zealand. It\'s our first project, and it\'s teaching us everything.' },
+  { num: '02', tag: 'Joint Venture', title: 'Toa Homes', years: '2020–2023', body: 'Toa Homes started as a question: what would it look like to develop genuinely affordable, sustainable housing in partnership with iwi? Co-founded with Ngāti Toa, this joint venture spent three years refining a Passive House housing delivery approach. The work was as much about relationships and governance as it was about building science.' },
+  { num: '03', tag: 'Project Leadership', title: 'Edge Impact', years: '2022–2025', body: 'From 2022 to 2025, I provided project leadership and staff mentorship for Edge Impact\'s built environment team across a series of complex projects during a period of significant organisational restructure. The work required holding technical depth and human complexity at the same time.' },
+  { num: '04', tag: 'Research & Advocacy', title: 'How We Live', years: '2021', body: 'In 2021, James Bushell and I led a series of conversations exploring the roots of Aotearoa\'s housing crisis. Rather than proposing another policy fix, the How We Live report advocated for a fundamentally more adaptive response — one that recognises the crisis as complex rather than merely complicated.' },
+  { num: '05', tag: 'Infrastructure', title: 'Te Rūnanga o Toa Rangatira — Infrastructure Acceleration Fund', years: '2021', body: 'Working closely with Orogen, Toa Architects and the Ngāti Toa property team, I supported the Iwi\'s bid as part of the Government\'s Infrastructure Acceleration Fund. Keneperu Landing was subsequently the first project awarded funding under the scheme.' },
+  { num: '06', tag: 'Facilitation', title: 'MAIHI Framework — Te Matapihi', years: '2021', body: 'Invited by Te Matapihi to support the design and facilitation of the inaugural hui for the Māori and Iwi Housing Innovation framework. Working across complex stakeholder groups to create space for genuine collaboration on one of Aotearoa\'s most pressing challenges.' },
+  { num: '07', tag: 'Advisory', title: 'GHD / Mott MacDonald — Yarra Valley Water', years: '2021', body: 'Throughout 2021, I worked with GHD, Mott MacDonald and others to develop a joint response to support Yarra Valley Water\'s engineering delivery. My role involved running training with the entire engineering team and supporting project governance to enable more place-based, regenerative outcomes.' },
+];
+---
+<Base title="Projects" currentPage="/projects" navTheme="dark">
+
+  <section class="v2-projects-hero">
+    <TopographyLines id="topo-proj-hero" theme="dark" density={12} />
+    <div class="container topo-content">
+      <p style="font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-sage); margin-bottom: var(--space-6);" class="reveal">Projects</p>
+      <h1 class="v2-projects-hero__heading reveal">I learn<br/>by doing.</h1>
+      <p style="margin-top: var(--space-8); max-width: 520px; color: rgba(242,237,231,0.65); font-size: 1.125rem; line-height: 1.65;" class="reveal">These are some of the projects that have shaped how I think and work — each one taught me something I couldn't have learned any other way.</p>
+    </div>
+  </section>
+
+  <section class="v2-project-list">
+    <div class="container" style="padding-top: var(--space-12); padding-bottom: var(--space-32);">
+      {projects.map(p => (
+        <article class="v2-project reveal">
+          <span class="v2-project__num">{p.num}</span>
+          <div>
+            <div class="v2-project__img-placeholder" aria-hidden="true"></div>
+            <span class="v2-project__tag">{p.tag}</span>
+            <h2 class="v2-project__title">{p.title}</h2>
+            <p class="v2-project__body">{p.body}</p>
+          </div>
+          <div>
+            <p class="v2-project__years">{p.years}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+</Base>

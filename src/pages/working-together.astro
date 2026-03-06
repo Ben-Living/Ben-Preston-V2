@@ -1,0 +1,57 @@
+---
+import Base from '../layouts/Base.astro';
+import TopographyLines from '../components/TopographyLines.astro';
+---
+<Base title="Working Together" currentPage="/working-together">
+
+  <section class="v2-wt-hero section--stone-soft">
+    <TopographyLines id="topo-wt" theme="stone" density={10} />
+    <div class="container topo-content">
+      <p class="label-text reveal" style="color: var(--color-sage); letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.75rem; margin-bottom: var(--space-6);">Working Together</p>
+      <h1 class="v2-wt-hero__heading reveal">Not a service menu.<br/>An open-handed invitation.</h1>
+      <div class="v2-wt-hero__body reveal-group">
+        <p class="reveal">The problems I care about most — the ones worth spending a working life on — are too large and too entangled for any one person, any one discipline, or any one organisation to solve alone. That's not a limitation. It's the nature of complex systems. And it means the only viable response is a complex, adaptive one: people across these systems, working together.</p>
+        <p class="reveal">I'm not looking for work. I have active ventures and meaningful projects that keep me fully engaged. But I'm always open to collaboration with people who share a sense of what matters — whether that's a consulting engagement, a joint venture, a research partnership, or something we haven't named yet.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--stone" style="padding: var(--space-32) 0;">
+    <div class="container">
+      <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-bottom: var(--space-10); letter-spacing: 0.05em; text-transform: uppercase;">Over the past decade I've developed a way of working that integrates things that are usually kept apart.</p>
+      <div class="v2-wt-items reveal-group">
+        <div class="v2-wt-item reveal">
+          <h2 class="v2-wt-item__title">I facilitate</h2>
+          <p class="v2-wt-item__body">Helping groups think together, navigate disagreement, and find ways forward that no one could have found alone. Trained in complexity facilitation and grounded in Elinor Ostrom's Nobel Prize-winning work on how groups successfully manage shared resources — and what conditions make that possible.</p>
+        </div>
+        <div class="v2-wt-item reveal">
+          <h2 class="v2-wt-item__title">I advise</h2>
+          <p class="v2-wt-item__body">Bringing strategic perspective to complex projects and organisations, particularly where technical, social, and ecological dimensions are entangled — which is to say, everywhere that matters.</p>
+        </div>
+        <div class="v2-wt-item reveal">
+          <h2 class="v2-wt-item__title">I lead</h2>
+          <p class="v2-wt-item__body">Stepping into hands-on project leadership where needed — not as an outside expert, but as someone willing to get into the work alongside a team and see things through.</p>
+        </div>
+        <div class="v2-wt-item reveal">
+          <h2 class="v2-wt-item__title">I coach</h2>
+          <p class="v2-wt-item__body">Supporting individuals navigating leadership in complex environments. Not as a standalone service, but woven into the work where it adds value.</p>
+        </div>
+        <div class="v2-wt-item reveal">
+          <h2 class="v2-wt-item__title">I build</h2>
+          <p class="v2-wt-item__body">The most convincing argument I can make is the things I've been involved in building. From Passive House cohousing communities to iwi housing joint ventures — the work speaks.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background: var(--color-charcoal); color: var(--color-stone); padding: var(--space-32) 0; text-align: center; position: relative; overflow: hidden;">
+    <TopographyLines id="topo-wt-close" theme="dark" density={12} />
+    <div class="container topo-content" style="max-width: 580px;">
+      <p style="font-family: var(--font-heading); font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 300; line-height: 1.35; letter-spacing: -0.02em; color: rgba(242,237,231,0.9); margin-bottom: var(--space-8);" class="reveal">
+        "The best collaborations I've been part of started with a conversation, not a proposal."
+      </p>
+      <a href="/contact" class="btn btn--gold reveal">Schedule a 20-minute Conversation</a>
+    </div>
+  </section>
+
+</Base>

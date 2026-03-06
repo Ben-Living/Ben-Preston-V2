@@ -1,0 +1,116 @@
+---
+import Base from '../layouts/Base.astro';
+import TopographyLines from '../components/TopographyLines.astro';
+---
+<Base title="Home" currentPage="/">
+
+  <!-- HERO: Split — text left, topo canvas right -->
+  <section class="v2-hero">
+    <!-- The topo panel fills the right half on desktop -->
+    <div class="v2-hero__topo-panel">
+      <TopographyLines id="topo-hero-right" theme="stone" density={16} />
+    </div>
+
+    <div class="v2-hero__inner container">
+      <div class="v2-hero__text">
+        <p class="v2-hero__label reveal">Ben Preston</p>
+        <h1 class="v2-hero__heading reveal">
+          I work in the<br/>
+          space <em>between</em><br/>
+          things.
+        </h1>
+        <p class="v2-hero__sub reveal">Between engineering and ecology, simplicity and complexity, strategy and soul. The rigour of science and the messiness of real life.</p>
+        <div class="v2-hero__cta reveal">
+          <a href="/working-together" class="btn btn--dark">Working Together</a>
+          <a href="/about" class="btn btn--gold">About Ben</a>
+        </div>
+      </div>
+      <!-- Right column is the canvas — empty, filled by topo -->
+      <div class="v2-hero__canvas-area"></div>
+    </div>
+  </section>
+
+  <!-- PULL QUOTE -->
+  <section class="v2-pullquote">
+    <TopographyLines id="topo-pq" theme="dark" density={10} />
+    <div class="container topo-content">
+      <p class="v2-pullquote__text reveal">
+        Most of my work comes down to the same question: how do we do important, complex things together without losing what matters along the way?
+      </p>
+    </div>
+  </section>
+
+  <!-- ABOUT STRIP: who Ben is -->
+  <section class="v2-about-strip">
+    <div class="container">
+      <div class="v2-about-strip__grid">
+        <div>
+          <p class="v2-about-strip__lead reveal">
+            I bring this to projects, organisations and communities through facilitation, strategic leadership and hands-on delivery — grounded in a decade of building things that actually work.
+          </p>
+          <div class="v2-about-strip__body reveal-group">
+            <p class="reveal">There's good science behind what I do. Cooperation isn't idealism — it's an evolutionary advantage. The groups that learn to work with complexity, rather than against it, are the ones that thrive. I help make that practical.</p>
+            <p class="reveal">I co-founded Living Systems Development to demonstrate this — Peachgrove East is our first project, a 48-unit net-zero Passive House cohousing community in Hamilton, New Zealand.</p>
+          </div>
+          <div class="reveal" style="margin-top: var(--space-8);">
+            <a href="/about" class="text-link">Read more about Ben →</a>
+          </div>
+        </div>
+        <div class="v2-about-strip__sidebar">
+          <div class="v2-about-strip__sidebar-item reveal">
+            <p class="v2-about-strip__item-label">Facilitation</p>
+            <p class="v2-about-strip__item-value">Helping groups think together, navigate disagreement, and find ways forward that no one could have found alone.</p>
+          </div>
+          <div class="v2-about-strip__sidebar-item reveal">
+            <p class="v2-about-strip__item-label">Strategic Leadership</p>
+            <p class="v2-about-strip__item-value">Complex projects where technical, social, and ecological dimensions meet.</p>
+          </div>
+          <div class="v2-about-strip__sidebar-item reveal">
+            <p class="v2-about-strip__item-label">Building</p>
+            <p class="v2-about-strip__item-value">Co-founder of Living Systems Development and Toa Homes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="v2-testimonial">
+    <TopographyLines id="topo-testi" theme="stone" density={8} />
+    <div class="container">
+      <div class="v2-testimonial__inner">
+        <blockquote class="reveal">
+          "Ben's presence made particularly challenging projects much easier for our staff and business. He is genuine, warm-hearted, a solid project lead, great leader and collaborator, and technically top-notch. We'd work with him again in a heartbeat."
+        </blockquote>
+        <p class="attribution reveal">— Max Van Biene, Director, Edge Impact</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOME CTA -->
+  <section class="v2-home-cta">
+    <TopographyLines id="topo-cta" theme="dark" density={12} />
+    <div class="container topo-content">
+      <h2 class="v2-home-cta__heading reveal">
+        If any of this resonates,<br/>
+        <em>let's chat.</em>
+      </h2>
+      <p class="v2-home-cta__body reveal">The best collaborations I've been part of started with a conversation, not a proposal.</p>
+      <div class="v2-home-cta__btns reveal">
+        <a href="/contact" class="btn btn--gold">Schedule a Call</a>
+        <a href="/contact" class="btn btn--outline-stone">Get in Touch</a>
+      </div>
+    </div>
+  </section>
+
+</Base>
+
+<style>
+  /* Hero responsive */
+  @media (max-width: 900px) {
+    .v2-hero__inner { grid-template-columns: 1fr !important; }
+    .v2-hero__canvas-area { display: none; }
+    .v2-hero__topo-panel { width: 100%; opacity: 0.5; }
+    .v2-hero__text { padding: 0 clamp(1.5rem, 5vw, 4rem); }
+  }
+</style>

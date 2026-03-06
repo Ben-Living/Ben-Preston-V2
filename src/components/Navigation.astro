@@ -1,0 +1,57 @@
+---
+interface Props {
+  currentPage?: string;
+  theme?: 'light' | 'dark';
+}
+const { currentPage = '', theme = 'light' } = Astro.props;
+const links = [
+  { href: '/working-together', label: 'Working Together' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/about', label: 'About' },
+  { href: '/field-notes', label: 'Field Notes' },
+  { href: '/contact', label: 'Contact' },
+];
+---
+<nav class={`nav ${theme === 'dark' ? 'nav--on-dark nav--dark' : ''}`} id="main-nav">
+  <div class="container">
+    <div class="nav__inner">
+      <a href="/" class="nav__logo">Ben Preston</a>
+      <div class="nav__links">
+        {links.map(l => (
+          <a href={l.href} class={`nav__link ${currentPage === l.href ? 'active' : ''}`}>{l.label}</a>
+        ))}
+      </div>
+      <button class="nav__toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="nav__mobile" id="nav-mobile" aria-hidden="true">
+  {links.map(l => (
+    <a href={l.href} class="nav__mobile-link">{l.label}</a>
+  ))}
+</div>
+<script>
+  const nav   = document.getElementById('main-nav');
+  const tog   = document.getElementById('nav-toggle');
+  const mob   = document.getElementById('nav-mobile');
+  let open    = false;
+  window.addEventListener('scroll', () => {
+    nav?.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+  if (window.scrollY > 20) nav?.classList.add('scrolled');
+  tog?.addEventListener('click', () => {
+    open = !open;
+    mob?.classList.toggle('open', open);
+    tog.setAttribute('aria-expanded', String(open));
+    const s = tog.querySelectorAll('span');
+    s[0].style.transform = open ? 'translateY(6.5px) rotate(45deg)' : '';
+    s[1].style.opacity   = open ? '0' : '';
+    s[2].style.transform = open ? 'translateY(-6.5px) rotate(-45deg)' : '';
+  });
+  mob?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    open = false; mob.classList.remove('open'); tog?.setAttribute('aria-expanded', 'false');
+    tog?.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+  }));
+</script>

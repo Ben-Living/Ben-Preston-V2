@@ -1,0 +1,616 @@
+---
+import Base from '../layouts/Base.astro';
+import TopographyLines from '../components/TopographyLines.astro';
+
+// First four phases of the journey — displayed as watershed nodes
+const journeyPhases = [
+  {
+    id: 'engineering',
+    title: 'Engineering',
+    label: 'Formation',
+    xPct: 63,
+    body: "I trained as a mechanical engineer. Systems thinking, first principles, the discipline of understanding how things actually work before you try to change them. That formation has never left me — it's in how I read a situation, how I ask questions, what I find satisfying about a problem well solved.",
+    projects: [
+      'Barangaroo South precinct, Sydney — engineering design and BIM coordination across multiple major tenant fitouts including PwC (~100,000m² across 20+ floors).',
+    ],
+    qualsLabel: 'Relevant qualifications',
+    quals: [
+      'Chartered Engineering Technologist, EngineeringNZ and Engineers Australia',
+    ],
+  },
+  {
+    id: 'sustainability',
+    title: 'Sustainability',
+    label: 'Practice',
+    xPct: 30,
+    body: "I spent years in sustainability consulting across Australia and New Zealand. Building performance, NABERS ratings, green certifications — serious work, and I'm glad I did it. But I kept arriving at the same frustration: we were getting better and better at optimising parts, while the whole stayed stuck. The technical solutions weren't the hard part. The hard part was always relational.",
+    projects: [
+      'PICAC Narre Warren, Victoria — led bid through to construction; pioneered an integrated procurement approach that achieved Net Zero Energy for under 10% over a code-minimum budget, funded through the Clean Energy Finance Corporation.',
+      'Victorian Pride Centre, Melbourne — led holistic sustainable design from concept through planning approval.',
+      'Hazelwynde / Yarra Valley Water, Melbourne — led development of a regenerative framework for a 350ha greenfield site north of Melbourne\'s CBD, in partnership with the University of Melbourne.',
+    ],
+    qualsLabel: 'Relevant qualifications',
+    quals: [
+      'Regenerative Practitioner, Regenesis Group and CLEAR',
+    ],
+  },
+  {
+    id: 'turn',
+    title: 'The Turn',
+    label: 'Realisation',
+    xPct: 50,
+    body: "That friction eventually led me somewhere I hadn't expected — to regenerative design, living systems theory, and to a growing conviction that the biggest leverage points in complex situations aren't technical. They're about how teams communicate, how communities make decisions together, how we close the gap between what we know we should do and what we actually do. Once I saw that, I couldn't unsee it.",
+    projects: [],
+    qualsLabel: 'Relevant qualifications',
+    quals: [
+      'SenseMaker® Narrative BaseCamp, Cynefin Co. (2022)',
+      'People Need People Facilitator, International Bateson Institute (2021)',
+      'Warriors for the Human Spirit, Berkana Institute / Margaret Wheatley (2018)',
+      'Zenergy Global, The Art of Facilitation',
+    ],
+    qualsIntro: 'Complexity practitioner and facilitator',
+  },
+  {
+    id: 'business',
+    title: 'First Steps in Business',
+    label: 'Founding',
+    xPct: 67,
+    body: "In 2019 I launched my own consulting practice — which meant learning, the hard way, what it actually takes to build something from nothing. The ups and downs of that period were real. But it also led, in 2021, to co-founding Toa Homes — a joint venture with Ngāti Toa, an iwi whose values around land, people and long-term thinking turned out to be a better fit for the work I wanted to do than anything I'd found in the conventional development sector.",
+    projects: [],
+    qualsLabel: 'Relevant qualifications',
+    quals: [
+      'Level 1: Foundations of Unfoldment, Aletheia Coaching',
+      'Level 2: The Alchemy of Unfolding Individuation, Aletheia Coaching',
+    ],
+  },
+];
+
+// The final two cards shown side-by-side under "The Present"
+const presentCards = [
+  {
+    id: 'now',
+    heading: 'Business',
+    xPct: 37,
+    body: "Today I'm co-founder and co-director of Living Systems Development, and I spend most of my time on Peachgrove East — a net-zero Passive House cohousing community in Hamilton that tries to be what it says it is, all the way down. I'm drawn to the question of how groups govern shared resources well, and I keep finding my way back to Elinor Ostrom's work on collective action — not as a framework to apply, but as a way of seeing. I'm also considering a Masters in Systems Oriented Design at AHO in Oslo, because the questions that interest me most are still the ones I haven't been able to answer.",
+  },
+  {
+    id: 'personal',
+    heading: 'Personal Life',
+    xPct: 63,
+    body: "I live in Aotearoa New Zealand with my partner Naomi and our dog Orla. I follow my curiosities. I learn every day. And I'm continually moved by the struggles and joys of human life — including my own.",
+  },
+];
+
+// All phases for the SVG stream (journey + present cards)
+const allPhaseIds = [...journeyPhases.map(p => p.id), ...presentCards.map(p => p.id)];
+---
+
+<Base title="About" currentPage="/about">
+
+  <!-- ── HERO ───────────────────────────────────────────────────────────── -->
+  <section class="v2-about-hero">
+    <TopographyLines id="topo-about" theme="stone" density={14} />
+    <div class="container topo-content">
+      <p class="ab-eyebrow reveal">About</p>
+      <h1 class="v2-about-hero__heading reveal">A life in<br/>interesting places.</h1>
+    </div>
+  </section>
+
+  <!-- ── INTRO (Northern Ireland) ───────────────────────────────────────── -->
+  <section class="v2-about-body">
+    <div class="container">
+      <div class="v2-about-text" style="max-width: 680px;">
+        <p class="reveal">I grew up in Northern Ireland during the Troubles, in a mixed-religion family, in a place where the community fabric was frayed. That gave me a particular kind of education — one not many would choose, but one that taught me a lot about what happens when people can't find their way to each other, and what's possible when they can.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PHOTO PLACEHOLDER ──────────────────────────────────────────────── -->
+  <div class="ab-photo-note">
+    <div class="container">
+      <p class="ab-photo-note__text">There are plenty of images of me on the internet. I've chosen not to include one here — I'd rather keep the focus on what I think matters more: the work and its consequences.</p>
+    </div>
+  </div>
+
+  <!-- ── WATERSHED JOURNEY ──────────────────────────────────────────────── -->
+  <section class="ab-watershed" id="ab-watershed">
+    <svg class="ab-ws__svg" id="ab-ws-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="ab-ws__nodes container">
+
+      {journeyPhases.map(phase => (
+        <div class="ab-node" data-phase={phase.id} style={`--x-pct: ${phase.xPct}%`}>
+          <button class="ab-node__trigger" aria-expanded="false" aria-controls={`ab-nb-${phase.id}`}>
+            <span class="ab-node__dot" aria-hidden="true"></span>
+            <span class="ab-node__label">{phase.label}</span>
+            <span class="ab-node__peek">{phase.title}</span>
+          </button>
+          <div class="ab-node__body" id={`ab-nb-${phase.id}`} style="max-height:0">
+            <div class="ab-node__card">
+              <h3 class="ab-node__card-title">{phase.title}</h3>
+              <p class="ab-node__card-body">{phase.body}</p>
+
+              {phase.projects.length > 0 && (
+                <ul class="ab-node__projects">
+                  {phase.projects.map(proj => <li>{proj}</li>)}
+                </ul>
+              )}
+
+              {phase.quals.length > 0 && (
+                <div class="ab-node__quals-block">
+                  {phase.qualsIntro && (
+                    <p class="ab-node__quals-intro">{phase.qualsIntro}</p>
+                  )}
+                  <p class="ab-node__quals-label">{phase.qualsLabel}</p>
+                  <ul class="ab-node__quals-list">
+                    {phase.quals.map(q => <li>{q}</li>)}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <!-- "The Present" section — two side-by-side cards -->
+      <div class="ab-present">
+        <h2 class="ab-present__heading">The Present</h2>
+        <div class="ab-present__grid">
+          {presentCards.map(card => (
+            <div class="ab-node ab-node--present" data-phase={card.id} style={`--x-pct: 50%`}>
+              <button class="ab-node__trigger" aria-expanded="false" aria-controls={`ab-nb-${card.id}`}>
+                <span class="ab-node__dot" aria-hidden="true"></span>
+                <span class="ab-node__label">{card.heading}</span>
+                <span class="ab-node__peek">{card.heading}</span>
+              </button>
+              <div class="ab-node__body" id={`ab-nb-${card.id}`} style="max-height:0">
+                <div class="ab-node__card">
+                  <h3 class="ab-node__card-title">{card.heading}</h3>
+                  <p class="ab-node__card-body">{card.body}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── TESTIMONIAL ────────────────────────────────────────────────────── -->
+  <section class="ab-testimonial">
+    <TopographyLines id="topo-about-testi" theme="dark" />
+    <div class="container topo-content" style="max-width: 700px;">
+      <blockquote class="ab-testi__quote reveal">
+        "Ben has been a cornerstone of our work at Toa Homes and with Ngāti Toa over the past four years. His ability to work sensitively across complex stakeholder groups is exceptional. With quiet confidence, he brings technical depth and practical wisdom to every project."
+      </blockquote>
+      <p class="ab-testi__attr reveal">— Helmut Modlik, Chief Executive Officer, Te Rūnanga o Toa Rangatira</p>
+    </div>
+  </section>
+
+</Base>
+
+<!-- ── CLIENT SCRIPT ──────────────────────────────────────────────────── -->
+<script>
+(function () {
+  'use strict';
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ws      = document.getElementById('ab-watershed');
+  const svg     = document.getElementById('ab-ws-svg');
+
+  // ── NODE EXPAND / COLLAPSE ───────────────────────────────────────────────
+
+  let openId: string | null = null;
+
+  function closeNode(id: string) {
+    const node = ws.querySelector<HTMLElement>(`[data-phase="${id}"]`);
+    if (!node) return;
+    const body = node.querySelector<HTMLElement>('.ab-node__body');
+    body.style.maxHeight = '0';
+    node.classList.remove('is-open');
+    node.querySelector('.ab-node__trigger').setAttribute('aria-expanded', 'false');
+    openId = null;
+  }
+
+  function openNode(id: string) {
+    if (openId && openId !== id) closeNode(openId);
+    const node = ws.querySelector<HTMLElement>(`[data-phase="${id}"]`);
+    if (!node) return;
+    const body = node.querySelector<HTMLElement>('.ab-node__body');
+    body.style.maxHeight = body.scrollHeight + 'px';
+    node.classList.add('is-open');
+    node.querySelector('.ab-node__trigger').setAttribute('aria-expanded', 'true');
+    openId = id;
+    setTimeout(drawOnce, 320);
+  }
+
+  ws.querySelectorAll('.ab-node__trigger').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const node = (btn as HTMLElement).closest<HTMLElement>('.ab-node');
+      const id   = node.dataset.phase;
+      node.classList.contains('is-open') ? closeNode(id) : openNode(id);
+    });
+  });
+
+  // ── SVG STREAM DRAWING ───────────────────────────────────────────────────
+
+  function getPoints(): { x: number; y: number }[] {
+    const sr = ws.getBoundingClientRect();
+    return [...ws.querySelectorAll<HTMLElement>('.ab-node__dot')].map(dot => {
+      const dr = dot.getBoundingClientRect();
+      return {
+        x: dr.left - sr.left + dr.width  / 2,
+        y: dr.top  - sr.top  + dr.height / 2,
+      };
+    });
+  }
+
+  function buildPath(pts: { x: number; y: number }[], dx: number): string {
+    if (pts.length < 2) return '';
+    const p = [
+      { x: pts[0].x + dx, y: pts[0].y - 120 },
+      ...pts.map(pt => ({ x: pt.x + dx, y: pt.y })),
+      { x: pts[pts.length - 1].x + dx, y: pts[pts.length - 1].y + 120 },
+    ];
+    let d = `M ${p[1].x.toFixed(1)} ${p[1].y.toFixed(1)}`;
+    for (let i = 1; i < p.length - 2; i++) {
+      const p0 = p[i - 1], p1 = p[i], p2 = p[i + 1], p3 = p[i + 2];
+      const cp1x = p1.x + (p2.x - p0.x) / 6;
+      const cp1y = p1.y + (p2.y - p0.y) / 6;
+      const cp2x = p2.x - (p3.x - p1.x) / 6;
+      const cp2y = p2.y - (p3.y - p1.y) / 6;
+      d += ` C ${cp1x.toFixed(1)} ${cp1y.toFixed(1)} ${cp2x.toFixed(1)} ${cp2y.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+    }
+    return d;
+  }
+
+  function addPath(d: string, stroke: string, width: number) {
+    if (!d) return;
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', d);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', stroke);
+    path.setAttribute('stroke-width', String(width));
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-linejoin', 'round');
+    svg.appendChild(path);
+  }
+
+  function drawStreams(bx: number) {
+    const W = ws.offsetWidth;
+    const H = ws.offsetHeight;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.innerHTML = '';
+    const pts = getPoints();
+    if (pts.length < 2) return;
+    addPath(buildPath(pts,  bx * 0.5),         'rgba(184,149,106,0.22)', 1.5);
+    addPath(buildPath(pts,  55 + bx * 0.85),   'rgba(184,149,106,0.10)', 1.0);
+    addPath(buildPath(pts, -45 + bx * 0.30),   'rgba(122,139,111,0.09)', 0.75);
+    addPath(buildPath(pts, 105 + bx * 0.60),   'rgba(184,149,106,0.06)', 0.75);
+  }
+
+  function drawOnce() { drawStreams(0); }
+
+  let breatheT = 0;
+  let raf: number | null = null;
+
+  function loop() {
+    breatheT += 0.004;
+    drawStreams(Math.sin(breatheT * Math.PI * 2) * 12);
+    raf = requestAnimationFrame(loop);
+  }
+
+  if (reduced) { drawOnce(); } else { raf = requestAnimationFrame(loop); }
+
+  const ro = new ResizeObserver(drawOnce);
+  ro.observe(ws);
+
+  document.addEventListener('astro:before-swap', () => {
+    if (raf !== null) cancelAnimationFrame(raf);
+    ro.disconnect();
+  });
+})();
+</script>
+
+<style>
+  /* ── HERO ─────────────────────────────────────────────────────────── */
+  .v2-about-hero {
+    background: var(--color-stone-soft);
+    padding-top: calc(var(--nav-height) + var(--space-20));
+    padding-bottom: var(--space-16);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ab-eyebrow {
+    font-size: var(--text-xs);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-sage);
+    margin-bottom: var(--space-6);
+    font-weight: 500;
+  }
+
+  .v2-about-hero__heading {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--color-ink);
+  }
+
+  /* ── INTRO ────────────────────────────────────────────────────────── */
+  .v2-about-body {
+    background: var(--color-stone-soft);
+    padding: var(--space-16) 0 var(--space-8);
+  }
+
+  .v2-about-text p {
+    font-size: var(--text-md);
+    line-height: var(--leading-loose);
+    color: rgba(45, 42, 38, 0.82);
+  }
+
+  /* ── PHOTO PLACEHOLDER ────────────────────────────────────────────── */
+  .ab-photo-note {
+    background: var(--color-stone-soft);
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .ab-photo-note__text {
+    max-width: 520px;
+    font-size: var(--text-sm);
+    font-style: italic;
+    color: var(--color-text-muted);
+    line-height: var(--leading-relaxed);
+  }
+
+  /* ── WATERSHED ────────────────────────────────────────────────────── */
+  .ab-watershed {
+    position: relative;
+    background: var(--color-stone-soft);
+    padding: var(--space-8) 0 var(--space-32);
+    overflow: hidden;
+  }
+
+  .ab-ws__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .ab-ws__nodes {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── NODES ────────────────────────────────────────────────────────── */
+  .ab-node {
+    width: 340px;
+    max-width: calc(100% - var(--space-8));
+    margin-left: max(0px, min(calc(100% - 340px), calc(var(--x-pct, 50%) - 170px)));
+    margin-bottom: var(--space-12);
+    position: relative;
+  }
+
+  @media (max-width: 768px) {
+    .ab-node { margin-left: auto; margin-right: auto; }
+  }
+
+  .ab-node__trigger {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: 100%;
+  }
+
+  .ab-node__dot {
+    display: block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-gold);
+    border: 2px solid rgba(184, 149, 106, 0.4);
+    transition: transform 0.25s ease, background 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .ab-node:hover .ab-node__dot,
+  .ab-node.is-open .ab-node__dot {
+    transform: scale(1.5);
+    background: var(--color-rust);
+    border-color: rgba(160, 92, 59, 0.35);
+  }
+
+  .ab-node__label {
+    font-size: var(--text-xs);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .ab-node__peek {
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    font-weight: 300;
+    color: var(--color-ink);
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .ab-node.is-open .ab-node__peek { color: var(--color-gold); }
+
+  /* ── NODE BODY ────────────────────────────────────────────────────── */
+  .ab-node__body {
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .ab-node__card {
+    padding: var(--space-6);
+    margin-top: var(--space-5);
+    background: rgba(255, 252, 248, 0.92);
+    border: 1px solid rgba(184, 149, 106, 0.18);
+    border-radius: 2px;
+  }
+
+  .ab-node__card-title {
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    margin-bottom: var(--space-3);
+  }
+
+  .ab-node__card-body {
+    font-size: var(--text-sm);
+    line-height: var(--leading-loose);
+    color: rgba(45, 42, 38, 0.78);
+  }
+
+  .ab-node__projects {
+    margin-top: var(--space-5);
+    padding-top: var(--space-4);
+    border-top: 1px solid rgba(45, 42, 38, 0.07);
+    padding-left: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .ab-node__projects li {
+    font-size: var(--text-xs);
+    line-height: var(--leading-relaxed);
+    color: rgba(45, 42, 38, 0.62);
+  }
+
+  .ab-node__quals-block {
+    margin-top: var(--space-5);
+    padding-top: var(--space-4);
+    border-top: 1px solid rgba(45, 42, 38, 0.07);
+  }
+
+  .ab-node__quals-intro {
+    font-size: var(--text-xs);
+    font-style: italic;
+    color: rgba(45, 42, 38, 0.55);
+    margin-bottom: var(--space-2);
+  }
+
+  .ab-node__quals-label {
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-sage);
+    font-weight: 500;
+    margin-bottom: var(--space-3);
+  }
+
+  .ab-node__quals-list {
+    padding-left: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .ab-node__quals-list li {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    line-height: var(--leading-relaxed);
+    list-style: none;
+    padding-left: var(--space-4);
+    position: relative;
+  }
+
+  .ab-node__quals-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--color-gold);
+    opacity: 0.6;
+  }
+
+  /* ── "THE PRESENT" SECTION ────────────────────────────────────────── */
+  .ab-present {
+    margin-top: var(--space-16);
+    padding-top: var(--space-12);
+    border-top: 1px solid rgba(45, 42, 38, 0.10);
+  }
+
+  .ab-present__heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-xs);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--color-sage);
+    margin-bottom: var(--space-10);
+  }
+
+  .ab-present__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+    max-width: 760px;
+  }
+
+  @media (max-width: 640px) {
+    .ab-present__grid { grid-template-columns: 1fr; }
+  }
+
+  /* Present nodes override lateral positioning — sit in the grid */
+  .ab-node--present {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0 !important;
+    margin-bottom: 0;
+  }
+
+  .ab-node--present .ab-node__trigger {
+    align-items: flex-start;
+  }
+
+  .ab-node--present .ab-node__dot {
+    margin-bottom: var(--space-2);
+  }
+
+  /* ── TESTIMONIAL ──────────────────────────────────────────────────── */
+  .ab-testimonial {
+    background: var(--color-charcoal);
+    color: var(--color-text-stone);
+    padding: var(--space-24) 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ab-testi__quote {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(1.25rem, 2vw, 1.65rem);
+    line-height: 1.5;
+    letter-spacing: -0.015em;
+    color: rgba(242, 237, 231, 0.90);
+    padding-left: var(--space-8);
+    border-left: 2px solid var(--color-gold);
+    margin: 0;
+  }
+
+  .ab-testi__attr {
+    margin-top: var(--space-6);
+    font-size: var(--text-sm);
+    color: rgba(242, 237, 231, 0.40);
+    padding-left: var(--space-8);
+  }
+</style>

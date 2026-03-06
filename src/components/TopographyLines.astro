@@ -1,0 +1,323 @@
+---
+/**
+ * FractalLines — L-system radial fractal growth
+ *
+ * Seed points and parameters are randomised on each page load using a seeded
+ * PRNG. The seed combines the canvas id (so each section has a distinct
+ * character) with a per-load salt (so it looks different every visit).
+ */
+
+interface Props {
+  theme?: 'stone' | 'dark';
+  density?: number; // kept for API compat, not used
+  id: string;
+}
+
+const { theme = 'stone', id } = Astro.props;
+
+const BG = {
+  stone: { r: 237, g: 229, b: 216 },
+  dark:  { r:  30, g:  28, b:  25 },
+};
+const bg = BG[theme as keyof typeof BG] ?? BG.stone;
+---
+
+<canvas id={id} class="topo" aria-hidden="true"></canvas>
+
+<script define:vars={{ id, theme, bgR: bg.r, bgG: bg.g, bgB: bg.b }}>
+(function () {
+  'use strict';
+
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ── Seeded PRNG ────────────────────────────────────────────────────
+  // Seed = hash(canvas id) XOR a random salt that changes every page load.
+  // Effect: each canvas section has its own distinct character, and the
+  // specific layout changes on every visit.
+  const LOAD_SALT = Math.random() * 0xFFFF | 0;
+
+  function hashId(str) {
+    let h = LOAD_SALT;
+    for (let i = 0; i < str.length; i++) {
+      h = Math.imul(h ^ str.charCodeAt(i), 2654435761);
+      h ^= h >>> 16;
+    }
+    return h >>> 0;
+  }
+
+  // Mulberry32 — fast, good distribution, reproducible from seed
+  function makeRng(seed) {
+    let s = seed >>> 0;
+    return () => {
+      s += 0x6D2B79F5;
+      let t = Math.imul(s ^ (s >>> 15), 1 | s);
+      t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  const rng = makeRng(hashId(id));
+
+  // ── L-system expansion ─────────────────────────────────────────────
+  function expand(axiom, rules, n) {
+    let s = axiom;
+    for (let i = 0; i < n; i++) {
+      let t = '';
+      for (let j = 0; j < s.length; j++) t += rules[s[j]] ?? s[j];
+      s = t;
+    }
+    return s;
+  }
+
+  function countF(str) {
+    let n = 0;
+    for (let i = 0; i < str.length; i++) if (str[i] === 'F') n++;
+    return n;
+  }
+
+  const SYS = [
+    { str: expand('X', { X: 'F+[[X]-X]-F[-FX]+X', F: 'FF' }, 5), angle: 25 },
+    { str: expand('F', { F: 'FF+[+F-F-F]-[-F+F+F]' }, 4),        angle: 22.5 },
+  ];
+  SYS.forEach(s => { s.fCount = countF(s.str); });
+
+  // ── Warm palette (lower contrast — softer presence) ────────────────
+  const PALETTE = theme === 'stone'
+    ? [
+        { rgb: '160,138,108', a: 0.28 }, // sand
+        { rgb: '184,149,106', a: 0.26 }, // gold
+        { rgb: '122,139,111', a: 0.24 }, // sage
+        { rgb: '175,148, 90', a: 0.25 }, // amber
+        { rgb: '145,132,105', a: 0.23 }, // warm grey
+      ]
+    : [
+        { rgb: '200,172,130', a: 0.30 }, // sand on dark
+        { rgb: '215,175,108', a: 0.28 }, // gold on dark
+        { rgb: '158,178,140', a: 0.26 }, // sage on dark
+        { rgb: '210,168, 95', a: 0.27 }, // amber on dark
+        { rgb: '185,162,128', a: 0.25 }, // warm grey on dark
+      ];
+
+  // ── Jittered grid placement ────────────────────────────────────────
+  // Divide the canvas into a COLS×ROWS grid. Shuffle all cell indices,
+  // then pick the first N as occupied — guaranteeing even spatial coverage
+  // while leaving some cells empty for asymmetry.
+  // Seed position is randomly jittered within its cell so it never looks
+  // mechanical.
+  const GRID_COLS = 4;
+  const GRID_ROWS = 3;
+  const TOTAL_CELLS = GRID_COLS * GRID_ROWS; // 12
+
+  // Fisher-Yates shuffle of cell indices using the seeded rng
+  const cellOrder = Array.from({ length: TOTAL_CELLS }, (_, i) => i);
+  for (let i = TOTAL_CELLS - 1; i > 0; i--) {
+    const j = rng() * (i + 1) | 0;
+    const tmp = cellOrder[i]; cellOrder[i] = cellOrder[j]; cellOrder[j] = tmp;
+  }
+
+  const N = 5 + (rng() * 4 | 0); // 5, 6, 7, or 8 seeds (≈30% more than before)
+  const INSTANCES = [];
+
+  for (let k = 0; k < N; k++) {
+    const cellIdx = cellOrder[k];
+    const gridCol = cellIdx % GRID_COLS;
+    const gridRow = Math.floor(cellIdx / GRID_COLS);
+
+    // Cell boundaries as fractions of canvas dimensions
+    const cx0 = gridCol / GRID_COLS;
+    const cy0 = gridRow / GRID_ROWS;
+    const cw  = 1 / GRID_COLS;
+    const ch  = 1 / GRID_ROWS;
+
+    // Jitter within cell — 20% inset margin keeps seeds off the very edge
+    const margin = 0.20;
+    const xFrac  = cx0 + cw * (margin + rng() * (1 - 2 * margin));
+    const yFrac  = cy0 + ch * (margin + rng() * (1 - 2 * margin));
+
+    const scale = 0.5 + rng() * 0.7; // 0.5×–1.2×
+
+    INSTANCES.push({
+      sys:      rng() < 0.5 ? 0 : 1,
+      xFrac,
+      yFrac,
+      scale,
+      pal:      rng() * PALETTE.length | 0,
+      phase:    rng() * Math.PI * 2,
+      axes:     rng() < 0.5 ? 5 : 6,
+      // Random base rotation per instance. Without this, arms from adjacent
+      // seeds share common orientations and visually read as connecting lines
+      // or triangles between seeds. Rotating each instance independently
+      // breaks that alignment.
+      rotOffset: rng() * 360,
+    });
+  }
+
+  // ── State ──────────────────────────────────────────────────────────
+  let w = 0, h = 0;
+  let breatheTime = 0;
+  let raf = null;
+  let mx = -9999, my = -9999;
+  let startTime = null;
+
+  // ── Growth curve ───────────────────────────────────────────────────
+  // 0→85% over the first 2.5 s (fast burst), 85→100% over the next 20 s
+  // (slow crawl), then holds at 1.0 and only breathing continues.
+  function growthFraction(elapsedSec) {
+    if (elapsedSec < 2.5)  return (elapsedSec / 2.5) * 0.85;
+    if (elapsedSec < 22.5) return 0.85 + ((elapsedSec - 2.5) / 20) * 0.15;
+    return 1.0;
+  }
+
+  // ── Resize ─────────────────────────────────────────────────────────
+  function resize() {
+    const p = canvas.parentElement;
+    w = p.offsetWidth;
+    h = p.offsetHeight;
+    canvas.width  = w;
+    canvas.height = h;
+  }
+
+  // ── Turtle graphics ────────────────────────────────────────────────
+  // maxF caps how many forward segments are drawn — the growth mechanism.
+  function turtle(str, startX, startY, headingDeg, stepLen, angleDeg, maxF) {
+    const toRad = Math.PI / 180;
+    let x = startX, y = startY;
+    let a = headingDeg * toRad;
+    const dA = angleDeg * toRad;
+    const stack = [];
+    let fDrawn = 0;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+
+    for (let i = 0; i < str.length; i++) {
+      const c = str[i];
+      if (c === 'F') {
+        if (fDrawn >= maxF) break;
+        fDrawn++;
+        x += stepLen * Math.cos(a);
+        y += stepLen * Math.sin(a);
+        ctx.lineTo(x, y);
+      } else if (c === '+') {
+        a += dA;
+      } else if (c === '-') {
+        a -= dA;
+      } else if (c === '[') {
+        stack.push(x, y, a);
+      } else if (c === ']') {
+        a = stack.pop(); y = stack.pop(); x = stack.pop();
+        ctx.moveTo(x, y);
+      }
+    }
+
+    ctx.stroke();
+  }
+
+  // ── Draw ───────────────────────────────────────────────────────────
+  function draw(elapsedSec, bt, cursorX, cursorY) {
+    ctx.fillStyle = `rgb(${bgR},${bgG},${bgB})`;
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.lineWidth = 1.0;
+    ctx.lineCap   = 'round';
+    ctx.lineJoin  = 'round';
+
+    const frac = growthFraction(elapsedSec);
+
+    // Cell size in px — used to set step length so growth radius ≈ 1.3–1.5×
+    // the cell dimension regardless of canvas size. REACH is an empirical
+    // estimate of how many step-lengths an arm extends from its seed.
+    const cellPx = Math.min(w / GRID_COLS, h / GRID_ROWS);
+    const REACH  = 25; // tune if fractals are too large or too small
+
+    for (const inst of INSTANCES) {
+      const sys = SYS[inst.sys];
+      const col = PALETTE[inst.pal];
+
+      const ox      = inst.xFrac * w;
+      const oy      = inst.yFrac * h;
+      // Step length scales with cell size and instance scale.
+      // At scale 1.0 the arm reaches ~1.4× the cell dimension;
+      // at scale 0.5 it stays well within; at scale 1.2 it overlaps neighbours.
+      const stepLen = (cellPx * 1.4 / REACH) * inst.scale;
+      const maxF    = Math.floor(frac * sys.fCount);
+
+      // Breathing: branch angle oscillates ±2.5° on a ~14 s cycle
+      const breathe = Math.sin(bt * 0.6 + inst.phase) * 2.5;
+
+      // Cursor: ±0.5° branch angle shift within 300 px of the seed
+      const dx = cursorX - ox;
+      const dy = cursorY - oy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const cursorShift = dist < 300 ? (1 - dist / 300) * 0.5 : 0;
+
+      // Scale-correlated opacity — steeper power curve for much wider depth range.
+      // Intended distribution across all instances:
+      //   ~70%: alpha 0.01–0.04  (barely perceptible — deep background)
+      //   ~20%: alpha 0.06–0.12  (mid-ground)
+      //   ~10%: alpha 0.20–0.35  (genuine foreground weight, 2–3 instances max)
+      // (~20–25× range between most recessive and most prominent)
+      const alpha = 0.015 * Math.pow(inst.scale / 0.5, 3.2);
+      ctx.strokeStyle = `rgba(${col.rgb},${Math.min(alpha, 0.35).toFixed(3)})`;
+
+      // Arms are rotated by a per-instance random offset so adjacent seeds
+      // don't share common orientations — prevents the apparent geometric
+      // lines (triangles, spokes) that form when arm directions align.
+      const angleStep = 360 / inst.axes;
+      for (let ai = 0; ai < inst.axes; ai++) {
+        turtle(
+          sys.str, ox, oy,
+          angleStep * ai + inst.rotOffset,
+          stepLen,
+          sys.angle + breathe + cursorShift,
+          maxF
+        );
+      }
+    }
+  }
+
+  // ── Render loop ────────────────────────────────────────────────────
+  function loop(timestamp) {
+    if (startTime === null) startTime = timestamp;
+    draw((timestamp - startTime) / 1000, breatheTime, mx, my);
+    breatheTime += 0.012;
+    raf = requestAnimationFrame(loop);
+  }
+
+  // ── Cursor ─────────────────────────────────────────────────────────
+  const parent = canvas.parentElement;
+  parent.addEventListener('mousemove', e => {
+    const r = canvas.getBoundingClientRect();
+    mx = e.clientX - r.left;
+    my = e.clientY - r.top;
+  }, { passive: true });
+  parent.addEventListener('mouseleave', () => { mx = -9999; my = -9999; }, { passive: true });
+
+  // ── Init ───────────────────────────────────────────────────────────
+  resize();
+
+  if (reduced) {
+    draw(999, 0, -9999, -9999); // static: full fractal, no animation
+  } else {
+    raf = requestAnimationFrame(loop);
+  }
+
+  const ro = new ResizeObserver(() => {
+    cancelAnimationFrame(raf);
+    startTime = null; // restart growth on resize
+    resize();
+    reduced ? draw(999, 0, -9999, -9999) : (raf = requestAnimationFrame(loop));
+  });
+  ro.observe(parent);
+
+  document.addEventListener('astro:before-swap', () => {
+    cancelAnimationFrame(raf);
+    ro.disconnect();
+  });
+})();
+</script>
