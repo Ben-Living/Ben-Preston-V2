@@ -1,5 +1,5 @@
 /* =============================================================================
-   BEN PRESTON — V2: WARM EDITORIAL
+   BEN PRESTON — WARM EDITORIAL
    Design philosophy: Starts in light. The stone and sand are home.
    Dark sections are dramatic counterpoints — rare, felt.
    More asymmetric. More literary. Topo lines are expressive, not just texture.
@@ -319,7 +319,7 @@ blockquote { font-family: var(--font-heading); font-style: italic; font-weight: 
 @media (max-width: 600px) { .footer__inner { flex-direction: column; align-items: flex-start; } }
 
 
-/* ─── V2 HOME ────────────────────────────────────────────────────────────── */
+/* ─── HOME ───────────────────────────────────────────────────────────────── */
 
 /* Hero — light stone base, topo lines very visible */
 .v2-hero {
@@ -376,7 +376,7 @@ blockquote { font-family: var(--font-heading); font-style: italic; font-weight: 
 }
 .v2-hero__cta { display: flex; gap: var(--space-4); flex-wrap: wrap; }
 
-/* V2 hero right — topo canvas fills this space */
+/* Hero right — topo canvas fills this space */
 .v2-hero__canvas-area {
   position: relative;
   height: 100%;
@@ -413,7 +413,7 @@ blockquote { font-family: var(--font-heading); font-style: italic; font-weight: 
   margin-right: 0.15em;
 }
 
-/* V2 about strip */
+/* About strip */
 .v2-about-strip {
   background: var(--color-stone-soft);
   padding: var(--space-32) 0;
@@ -449,7 +449,7 @@ blockquote { font-family: var(--font-heading); font-style: italic; font-weight: 
 .v2-about-strip__item-value { font-size: var(--text-base); color: rgba(45, 42, 38, 0.8); line-height: var(--leading-relaxed); }
 @media (max-width: 900px) { .v2-about-strip__grid { grid-template-columns: 1fr; } }
 
-/* V2 testimonial */
+/* Testimonial */
 .v2-testimonial {
   background: var(--color-stone-deep);
   padding: var(--space-32) 0;
@@ -472,7 +472,7 @@ blockquote { font-family: var(--font-heading); font-style: italic; font-weight: 
 }
 .v2-testimonial .attribution { margin-top: var(--space-6); font-size: var(--text-sm); color: var(--color-text-muted); padding-left: var(--space-8); position: relative; z-index: 1; }
 
-/* V2 CTA */
+/* CTA */
 .v2-home-cta {
   background: var(--color-charcoal);
   padding: var(--space-32) 0;
@@ -485,7 +485,7 @@ blockquote { font-family: var(--font-heading); font-style: italic; font-weight: 
 .v2-home-cta__body { font-size: var(--text-md); color: rgba(242, 237, 231, 0.6); max-width: 460px; margin: 0 auto var(--space-10); }
 .v2-home-cta__btns { display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; }
 
-/* ─── V2 WORKING TOGETHER ────────────────────────────────────────────────── */
+/* ─── WORKING TOGETHER ───────────────────────────────────────────────────── */
 .v2-wt-hero {
   position: relative;
   background: var(--color-stone-soft);
@@ -510,7 +510,7 @@ blockquote { font-family: var(--font-heading); font-style: italic; font-weight: 
 .v2-wt-item__body { font-size: var(--text-md); color: rgba(45, 42, 38, 0.7); line-height: var(--leading-relaxed); padding-top: var(--space-1); }
 @media (max-width: 768px) { .v2-wt-item { grid-template-columns: 1fr; gap: var(--space-4); } }
 
-/* ─── V2 PROJECTS ────────────────────────────────────────────────────────── */
+/* ─── PROJECTS ───────────────────────────────────────────────────────────── */
 .v2-projects-hero {
   position: relative;
   background: var(--color-charcoal);
@@ -558,7 +558,7 @@ blockquote { font-family: var(--font-heading); font-style: italic; font-weight: 
 @media (max-width: 1024px) { .v2-project { grid-template-columns: 80px 1fr; } .v2-project__years { display: none; } }
 @media (max-width: 640px) { .v2-project { grid-template-columns: 1fr; } .v2-project__num { display: none; } }
 
-/* ─── V2 ABOUT ───────────────────────────────────────────────────────────── */
+/* ─── ABOUT ──────────────────────────────────────────────────────────────── */
 .v2-about-hero {
   position: relative;
   background: var(--color-stone);
@@ -577,7 +577,7 @@ blockquote { font-family: var(--font-heading); font-style: italic; font-weight: 
 .v2-quals__item { font-size: var(--text-sm); color: rgba(45, 42, 38, 0.7); line-height: var(--leading-relaxed); padding-left: var(--space-5); position: relative; }
 .v2-quals__item::before { content: '—'; position: absolute; left: 0; color: var(--color-gold); }
 
-/* ─── V2 FIELD NOTES ─────────────────────────────────────────────────────── */
+/* ─── FIELD NOTES ────────────────────────────────────────────────────────── */
 .v2-fn-hero { background: var(--color-charcoal); color: var(--color-stone); padding-top: calc(var(--nav-height) + var(--space-20)); padding-bottom: var(--space-16); position: relative; overflow: hidden; }
 .v2-fn-hero__heading { font-family: var(--font-heading); font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 300; letter-spacing: -0.03em; max-width: 640px; line-height: 1.1; }
 .v2-fn-grid { background: var(--color-stone-soft); padding-bottom: var(--space-32); }
@@ -590,7 +590,7 @@ blockquote { font-family: var(--font-heading); font-style: italic; font-weight: 
 @media (max-width: 900px) { .v2-fn-cards { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 600px) { .v2-fn-cards { grid-template-columns: 1fr; } }
 
-/* ─── V2 CONTACT ─────────────────────────────────────────────────────────── */
+/* ─── CONTACT ────────────────────────────────────────────────────────────── */
 .v2-contact-hero { background: var(--color-stone); padding-top: calc(var(--nav-height) + var(--space-24)); padding-bottom: var(--space-32); min-height: 80vh; display: flex; align-items: flex-start; position: relative; overflow: hidden; }
 .v2-contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-24); align-items: start; }
 .v2-contact-heading { font-family: var(--font-heading); font-size: clamp(2.25rem, 4.5vw, 4rem); font-weight: 300; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: var(--space-8); }
