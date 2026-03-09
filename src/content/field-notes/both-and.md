@@ -2,6 +2,7 @@
 title: "Both/And"
 excerpt: "Most of the stuck places I've encountered share a common structure: a false choice between two things that aren't actually opposed."
 connections: ["the-inherited-story", "cooperation-as-strategy", "the-future-is-a-process", "when-good-intentions-compete", "the-narrow-definition-of-value"]
+tags: ["Lead", "Facilitate"]
 ---
 
 I have — rightly or wrongly — an unshakeable belief that people want to do the right thing. That actions causing harm more often than not do so as a by-product of good intentions, often misinformed ones.

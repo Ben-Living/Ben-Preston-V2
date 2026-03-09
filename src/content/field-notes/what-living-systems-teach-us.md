@@ -2,6 +2,7 @@
 title: "What Living Systems Teach Us"
 excerpt: "When I talk about living systems, I'm not reaching for a metaphor. I'm pointing at the most sophisticated model of adaptive organisation we have access to."
 connections: ["the-inherited-story", "the-future-is-a-process", "both-and", "every-whole-is-a-part", "development-as-unveiling", "self-interest-not-sacrifice"]
+tags: ["Lead", "Design", "Build"]
 ---
 
 When I talk about living systems, I'm not reaching for a metaphor. I'm pointing at the most sophisticated model of adaptive organisation we have access to — one that has been refining itself for roughly 3.8 billion years.

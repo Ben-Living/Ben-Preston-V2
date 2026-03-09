@@ -103,57 +103,73 @@ const bg = BG[theme as keyof typeof BG] ?? BG.stone;
         { rgb: '185,162,128', a: 0.25 }, // warm grey on dark
       ];
 
-  // ── Jittered grid placement ────────────────────────────────────────
-  // Divide the canvas into a COLS×ROWS grid. Shuffle all cell indices,
-  // then pick the first N as occupied — guaranteeing even spatial coverage
-  // while leaving some cells empty for asymmetry.
-  // Seed position is randomly jittered within its cell so it never looks
-  // mechanical.
-  const GRID_COLS = 4;
-  const GRID_ROWS = 3;
-  const TOTAL_CELLS = GRID_COLS * GRID_ROWS; // 12
+  // ── Jittered grid placement — two-tier depth system ───────────────
+  // FOREGROUND (2–3 elements): full visual weight, scale 0.75–1.20.
+  // BACKGROUND (13–17 elements): faint depth layer, scale 0.25–0.50.
+  // Foreground uses a 4×3 grid; background uses a denser 6×5 grid so
+  // elements spread evenly across the canvas without needing to share cells.
 
-  // Fisher-Yates shuffle of cell indices using the seeded rng
-  const cellOrder = Array.from({ length: TOTAL_CELLS }, (_, i) => i);
-  for (let i = TOTAL_CELLS - 1; i > 0; i--) {
-    const j = rng() * (i + 1) | 0;
-    const tmp = cellOrder[i]; cellOrder[i] = cellOrder[j]; cellOrder[j] = tmp;
+  // Fisher-Yates shuffle using the seeded rng
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = rng() * (i + 1) | 0;
+      const tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+    }
+    return arr;
   }
 
-  const N = 5 + (rng() * 4 | 0); // 5, 6, 7, or 8 seeds (≈30% more than before)
+  // Place N elements on a COLS×ROWS jittered grid; returns [{xFrac, yFrac}]
+  function placeOnGrid(count, cols, rows) {
+    const cells = shuffle(Array.from({ length: cols * rows }, (_, i) => i));
+    const margin = 0.20;
+    const out = [];
+    for (let k = 0; k < Math.min(count, cells.length); k++) {
+      const ci = cells[k];
+      const col = ci % cols;
+      const row = Math.floor(ci / cols);
+      out.push({
+        xFrac: col / cols + (1 / cols) * (margin + rng() * (1 - 2 * margin)),
+        yFrac: row / rows + (1 / rows) * (margin + rng() * (1 - 2 * margin)),
+      });
+    }
+    return out;
+  }
+
   const INSTANCES = [];
 
-  for (let k = 0; k < N; k++) {
-    const cellIdx = cellOrder[k];
-    const gridCol = cellIdx % GRID_COLS;
-    const gridRow = Math.floor(cellIdx / GRID_COLS);
-
-    // Cell boundaries as fractions of canvas dimensions
-    const cx0 = gridCol / GRID_COLS;
-    const cy0 = gridRow / GRID_ROWS;
-    const cw  = 1 / GRID_COLS;
-    const ch  = 1 / GRID_ROWS;
-
-    // Jitter within cell — 20% inset margin keeps seeds off the very edge
-    const margin = 0.20;
-    const xFrac  = cx0 + cw * (margin + rng() * (1 - 2 * margin));
-    const yFrac  = cy0 + ch * (margin + rng() * (1 - 2 * margin));
-
-    const scale = 0.5 + rng() * 0.7; // 0.5×–1.2×
-
+  // ── FOREGROUND tier (2–3 elements, full visual weight) ─────────────
+  const N_FG = 2 + (rng() * 2 | 0); // 2 or 3
+  for (const pos of placeOnGrid(N_FG, 4, 3)) {
     INSTANCES.push({
-      sys:      rng() < 0.5 ? 0 : 1,
-      xFrac,
-      yFrac,
-      scale,
-      pal:      rng() * PALETTE.length | 0,
-      phase:    rng() * Math.PI * 2,
-      axes:     rng() < 0.5 ? 5 : 6,
-      // Random base rotation per instance. Without this, arms from adjacent
-      // seeds share common orientations and visually read as connecting lines
-      // or triangles between seeds. Rotating each instance independently
-      // breaks that alignment.
+      sys:       rng() < 0.5 ? 0 : 1,
+      xFrac:     pos.xFrac,
+      yFrac:     pos.yFrac,
+      scale:     0.75 + rng() * 0.45, // 0.75–1.20
+      pal:       rng() * PALETTE.length | 0,
+      phase:     rng() * Math.PI * 2,
+      axes:      rng() < 0.5 ? 5 : 6,
       rotOffset: rng() * 360,
+      bgTier:    false,
+      bgAlpha:   0,
+    });
+  }
+
+  // ── BACKGROUND tier (13–17 elements, faint depth layer) ────────────
+  // Uses a denser 6×5 = 30-cell grid for even spatial spread.
+  // Alpha distributed 0.03–0.12 so elements range from barely visible to faint.
+  const N_BG = 13 + (rng() * 5 | 0); // 13–17
+  for (const pos of placeOnGrid(N_BG, 6, 5)) {
+    INSTANCES.push({
+      sys:       rng() < 0.5 ? 0 : 1,
+      xFrac:     pos.xFrac,
+      yFrac:     pos.yFrac,
+      scale:     0.25 + rng() * 0.25, // 0.25–0.50 — smaller to avoid clutter
+      pal:       rng() * PALETTE.length | 0,
+      phase:     rng() * Math.PI * 2,
+      axes:      rng() < 0.5 ? 5 : 6,
+      rotOffset: rng() * 360,
+      bgTier:    true,
+      bgAlpha:   0.03 + rng() * 0.09, // 0.03–0.12
     });
   }
 
@@ -229,10 +245,9 @@ const bg = BG[theme as keyof typeof BG] ?? BG.stone;
 
     const frac = growthFraction(elapsedSec);
 
-    // Cell size in px — used to set step length so growth radius ≈ 1.3–1.5×
-    // the cell dimension regardless of canvas size. REACH is an empirical
-    // estimate of how many step-lengths an arm extends from its seed.
-    const cellPx = Math.min(w / GRID_COLS, h / GRID_ROWS);
+    // Cell size in px — base reference using the foreground grid (4×3).
+    // Background elements use smaller scale so their reach is naturally smaller.
+    const cellPx = Math.min(w / 4, h / 3);
     const REACH  = 25; // tune if fractals are too large or too small
 
     for (const inst of INSTANCES) {
@@ -256,14 +271,12 @@ const bg = BG[theme as keyof typeof BG] ?? BG.stone;
       const dist = Math.sqrt(dx * dx + dy * dy);
       const cursorShift = dist < 300 ? (1 - dist / 300) * 0.5 : 0;
 
-      // Scale-correlated opacity — steeper power curve for much wider depth range.
-      // Intended distribution across all instances:
-      //   ~70%: alpha 0.01–0.04  (barely perceptible — deep background)
-      //   ~20%: alpha 0.06–0.12  (mid-ground)
-      //   ~10%: alpha 0.20–0.35  (genuine foreground weight, 2–3 instances max)
-      // (~20–25× range between most recessive and most prominent)
-      const alpha = 0.015 * Math.pow(inst.scale / 0.5, 3.2);
-      ctx.strokeStyle = `rgba(${col.rgb},${Math.min(alpha, 0.35).toFixed(3)})`;
+      // Two-tier depth: foreground uses scale-correlated alpha (original behaviour,
+      // unchanged); background uses a pre-assigned low alpha (0.03–0.12).
+      const alpha = inst.bgTier
+        ? inst.bgAlpha
+        : Math.min(0.015 * Math.pow(inst.scale / 0.5, 3.2), 0.35);
+      ctx.strokeStyle = `rgba(${col.rgb},${alpha.toFixed(3)})`;
 
       // Arms are rotated by a per-instance random offset so adjacent seeds
       // don't share common orientations — prevents the apparent geometric

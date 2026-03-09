@@ -2,6 +2,7 @@
 title: "Outcomes Emerge from Process"
 excerpt: "Focusing on an outcome while ignoring the process cannot lead to that outcome — because we haven't created the conditions from which it could emerge."
 connections: ["the-future-is-a-process", "start-where-you-are", "the-wall-and-the-gap"]
+tags: ["Lead", "Facilitate"]
 ---
 
 Here's what can happen when we have a strong focus on outcome:

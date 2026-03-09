@@ -2,6 +2,7 @@
 title: "The Future is a Process, Not an Outcome"
 excerpt: "We don't know what we'll be doing next year. That's not a problem to solve — it's a reality to design for."
 connections: ["what-living-systems-teach-us", "start-where-you-are", "both-and", "outcomes-emerge-from-process", "the-wall-and-the-gap"]
+tags: ["Lead", "Design"]
 ---
 
 The term "regenerative" gets thrown around a lot these days, rather like "sustainability" in the last few decades. On the one hand, it's great that it's resonating. On the other hand, we haven't exactly nailed the whole "sustainability" thing. Clearly there's little correlation between how frequently we use a label and the delivery of the core meaning of the word.

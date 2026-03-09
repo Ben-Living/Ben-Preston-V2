@@ -2,6 +2,7 @@
 title: "Every Whole is a Part"
 excerpt: "My heart is a whole in its own right, and it is a part of the whole that is me."
 connections: ["what-living-systems-teach-us", "development-as-unveiling", "self-interest-not-sacrifice"]
+tags: ["Design", "Lead"]
 ---
 
 Every living system is simultaneously a whole and a part of a greater whole. My heart is a whole in its own right, and it is a part of the whole that is me. I am a whole, and part of a family, a community, a watershed, a biosphere.

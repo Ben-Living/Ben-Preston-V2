@@ -2,6 +2,7 @@
 title: "Self-Interest, Not Sacrifice"
 excerpt: "Caring for the systems we depend on isn't altruism. It's the most rational thing we can do."
 connections: ["what-living-systems-teach-us", "every-whole-is-a-part", "cooperation-as-strategy"]
+tags: ["Build", "Lead"]
 ---
 
 Large groups of us believe a cultural narrative which tells us that, due to our supreme intellect and ingenuity, we are overlords of the natural world. To lord it over something, you have to be distinct from it, right?

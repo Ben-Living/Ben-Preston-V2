@@ -2,6 +2,7 @@
 title: "The Inherited Story"
 excerpt: "The mechanistic worldview isn't the rigorous position. It's the inherited one."
 connections: ["both-and", "what-living-systems-teach-us", "the-crisis-of-story", "the-echo-chamber", "design-as-a-way-of-knowing"]
+tags: ["Lead", "Design"]
 ---
 
 We carry a story about the world that most of us never chose. It was handed to us — through education, through institutions, through the way our cities are planned and our organisations are managed. The story says: the world is a machine. Break it into parts, understand the parts, and you understand the whole. Measure, predict, control.

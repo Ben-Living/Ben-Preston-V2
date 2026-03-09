@@ -2,6 +2,7 @@
 title: "The Wall and the Gap"
 excerpt: "We keep banging our heads when the opening is three metres to the left."
 connections: ["the-future-is-a-process", "both-and", "the-echo-chamber"]
+tags: ["Lead", "Facilitate"]
 ---
 
 We keep banging our head against a particularly stubborn wall. A wall made of bricks, reinforced with concrete and steel. We're never getting through, yet we keep trying. We're bloody, bruised, and fed up. And yet on and on we go lumping our head against this brutish thing.

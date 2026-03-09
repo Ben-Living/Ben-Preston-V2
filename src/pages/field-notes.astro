@@ -4,414 +4,63 @@ import TopographyLines from '../components/TopographyLines.astro';
 import { getCollection } from 'astro:content';
 
 const allNotes = await getCollection('field-notes');
-const notesBySlug = Object.fromEntries(allNotes.map(n => [n.slug, n]));
 
-// Deduplicated undirected connection pairs
-const pairSet = new Set<string>();
-for (const note of allNotes) {
-  for (const target of note.data.connections) {
-    pairSet.add([note.slug, target].sort().join('|'));
-  }
-}
-const connectionPairs = [...pairSet].map(p => p.split('|'));
-
-// All note content for client-side consumption
-const notesData = Object.fromEntries(allNotes.map(n => [
-  n.slug,
-  {
-    title: n.data.title,
-    excerpt: n.data.excerpt,
-    body: (n.body || '').split('\n\n').filter((p: string) => p.trim()).map((p: string) => p.trim()),
-    connections: n.data.connections,
-  }
-]));
+// Sort alphabetically by title for a stable, readable order
+const notes = allNotes.sort((a, b) => a.data.title.localeCompare(b.data.title));
 ---
 
 <Base title="Field Notes" currentPage="/field-notes" navTheme="dark">
 
-  <!-- ── COMPACT DARK HEADER ─────────────────────────────────────────────── -->
+  <!-- ── DARK HEADER ──────────────────────────────────────────────────────── -->
   <section class="fn-header">
     <TopographyLines id="topo-fn" theme="dark" />
     <div class="container topo-content fn-header__inner">
       <p class="fn-header__eyebrow">Field Notes</p>
-      <p class="fn-header__sub">
-        A connected web of ideas. Drag to pan · Scroll to zoom · Click a node to read.
-      </p>
     </div>
   </section>
 
-  <!-- ── DATA for client JS ─────────────────────────────────────────────── -->
-  <script type="application/json" id="fn-data" set:text={JSON.stringify({ notesData, connectionPairs })}></script>
-
-  <!-- ── DESKTOP CANVAS (hidden on mobile) ─────────────────────────────── -->
-  <div id="canvas-root">
-    <div id="canvas-inner">
-      <svg id="fn-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <g id="fn-lines-g"></g>
-      </svg>
-      <!-- Nodes injected by JS -->
+  <!-- ── INTRO ──────────────────────────────────────────────────────────────── -->
+  <section class="fn-intro">
+    <div class="container fn-intro__inner">
+      <p class="fn-intro__lead reveal">The proposition that forms the foundation of my ideas and my work.</p>
+      <div class="fn-intro__body reveal-group">
+        <p class="reveal">We are not only a self experiencing the world from the inside. We are also a fractal of that world itself — nested within it, shaped by it, shaping it in return. This is what our best science points to, and what direct experience confirms when we slow down enough to notice.</p>
+        <p class="reveal">Most of our problems — in how we lead, how we collaborate, what we build — trace back to a misunderstanding of this. The work is to gently, persistently reorganise our ways of being and acting to reflect what's actually true. When that happens, everything else gets easier.</p>
+        <p class="reveal fn-intro__transition">Things I'm thinking about, working through, or want to share. Some of these are essays, some are conversations, some are just notes from the field.</p>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- ── MOBILE LIST (shown only on mobile) ───────────────────────────── -->
-  <div class="fn-mobile" id="fn-mobile">
-    <div class="fn-mobile__header">
-      <p class="fn-mobile__label">Field Notes</p>
-      <p class="fn-mobile__sub">A connected web of ideas.</p>
-    </div>
-    {allNotes.map(note => (
-      <div class="fn-mobile-card" data-slug={note.slug}>
-        <button class="fn-mobile-card__trigger">
-          <span class="fn-mobile-card__title">{note.data.title}</span>
-          <span class="fn-mobile-card__excerpt">{note.data.excerpt}</span>
-          <span class="fn-mobile-card__icon" aria-hidden="true"></span>
-        </button>
-        <div class="fn-mobile-card__body">
-          <div class="fn-mobile-card__body-inner">
-            {note.body.split('\n\n').filter((p: string) => p.trim()).map((para: string) => (
-              <p>{para.trim()}</p>
-            ))}
-            {note.data.connections.length > 0 && (
-              <div class="fn-mobile-related">
-                <p class="fn-mobile-related__label">Related</p>
-                {note.data.connections.map((slug: string) => {
-                  const rel = notesBySlug[slug];
-                  return rel ? (
-                    <button class="fn-mobile-related__btn" data-target={slug}>
-                      {rel.data.title}
-                    </button>
-                  ) : null;
-                })}
+  <!-- ── CARD GRID ──────────────────────────────────────────────────────────── -->
+  <section class="fn-grid-section">
+    <div class="container">
+      <div class="fn-cards">
+        {notes.map(note => (
+          <a href={`/field-notes/${note.slug}`} class="fn-card">
+            {note.data.tags && note.data.tags.length > 0 && (
+              <div class="fn-card__tags">
+                {note.data.tags.map((tag: string) => (
+                  <span class="fn-card__tag">{tag}</span>
+                ))}
               </div>
             )}
-          </div>
-        </div>
+            <h2 class="fn-card__title">{note.data.title}</h2>
+            <p class="fn-card__excerpt">{note.data.excerpt}</p>
+          </a>
+        ))}
       </div>
-    ))}
-  </div>
-
-  <!-- ── READING PANEL (desktop, initially hidden) ──────────────────────── -->
-  <aside class="fn-panel" id="fn-panel" aria-hidden="true" aria-label="Field note">
-    <button class="fn-panel__close" id="fn-panel-close" aria-label="Close">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-        <line x1="1" y1="1" x2="13" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="13" y1="1" x2="1" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-    </button>
-    <div class="fn-panel__scroll">
-      <div class="fn-panel__content" id="fn-panel-content"></div>
     </div>
-  </aside>
+  </section>
 
 </Base>
-
-<!-- ── CLIENT SCRIPT ─────────────────────────────────────────────────────── -->
-<script>
-// ── DATA ───────────────────────────────────────────────────────────────────
-const dataEl = document.getElementById('fn-data');
-if (!dataEl) throw new Error('fn-data missing');
-const { notesData, connectionPairs } = JSON.parse(dataEl.textContent!) as {
-  notesData: Record<string, { title: string; excerpt: string; body: string[]; connections: string[] }>;
-  connectionPairs: string[][];
-};
-
-const isMobile = () => window.innerWidth < 768;
-
-// ── RADIAL LAYOUT POSITIONS ────────────────────────────────────────────────
-const CENTRAL_SLUG = 'my-guiding-proposition';
-const INNER_R = 320;
-const OUTER_R = 620;
-
-function radialPos(r: number, i: number, count: number, offsetDeg = 0) {
-  const deg = (i / count) * 360 + offsetDeg;
-  const rad = (deg * Math.PI) / 180;
-  return { x: r * Math.sin(rad), y: -r * Math.cos(rad) };
-}
-
-const others = Object.entries(notesData)
-  .filter(([slug]) => slug !== CENTRAL_SLUG)
-  .sort(([, a], [, b]) => b.connections.length - a.connections.length);
-
-const innerRing = others.slice(0, 8);
-const outerRing = others.slice(8);
-
-const positions = new Map<string, { x: number; y: number }>();
-positions.set(CENTRAL_SLUG, { x: 0, y: 0 });
-innerRing.forEach(([slug], i) => positions.set(slug, radialPos(INNER_R, i, innerRing.length)));
-outerRing.forEach(([slug], i) => positions.set(slug, radialPos(OUTER_R, i, outerRing.length, 22.5)));
-
-// ── MOBILE ACCORDION ───────────────────────────────────────────────────────
-function initMobileAccordion() {
-  const cards = document.querySelectorAll('.fn-mobile-card');
-
-  cards.forEach(card => {
-    const trigger = card.querySelector('.fn-mobile-card__trigger')!;
-    const body    = card.querySelector('.fn-mobile-card__body') as HTMLElement;
-    const inner   = card.querySelector('.fn-mobile-card__body-inner') as HTMLElement;
-
-    trigger.addEventListener('click', () => {
-      const isOpen = card.classList.contains('is-open');
-      cards.forEach(c => {
-        if (c.classList.contains('is-open')) {
-          c.classList.remove('is-open');
-          (c.querySelector('.fn-mobile-card__body') as HTMLElement).style.maxHeight = '0';
-          c.querySelector('.fn-mobile-card__trigger')!.setAttribute('aria-expanded', 'false');
-        }
-      });
-      if (!isOpen) {
-        card.classList.add('is-open');
-        body.style.maxHeight = inner.scrollHeight + 'px';
-        trigger.setAttribute('aria-expanded', 'true');
-      }
-    });
-  });
-
-  document.querySelectorAll('.fn-mobile-related__btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      const slug = (btn as HTMLElement).dataset.target!;
-      const target = document.querySelector(`.fn-mobile-card[data-slug="${slug}"]`) as HTMLElement | null;
-      if (!target) return;
-      const allCards = document.querySelectorAll('.fn-mobile-card');
-      allCards.forEach(c => {
-        c.classList.remove('is-open');
-        (c.querySelector('.fn-mobile-card__body') as HTMLElement).style.maxHeight = '0';
-      });
-      const tBody  = target.querySelector('.fn-mobile-card__body') as HTMLElement;
-      const tInner = target.querySelector('.fn-mobile-card__body-inner') as HTMLElement;
-      target.classList.add('is-open');
-      tBody.style.maxHeight = tInner.scrollHeight + 'px';
-      setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
-    });
-  });
-}
-
-// ── CANVAS ─────────────────────────────────────────────────────────────────
-function initCanvas() {
-  const canvasRoot   = document.getElementById('canvas-root')    as HTMLElement | null;
-  const canvasInner  = document.getElementById('canvas-inner')   as HTMLElement | null;
-  const linesG       = document.getElementById('fn-lines-g');
-  const panel        = document.getElementById('fn-panel')        as HTMLElement | null;
-  const panelClose   = document.getElementById('fn-panel-close') as HTMLElement | null;
-  const panelContent = document.getElementById('fn-panel-content') as HTMLElement | null;
-  if (!canvasRoot || !canvasInner || !linesG || !panel || !panelClose || !panelContent) return;
-
-  // ── CREATE NODES ────────────────────────────────────────────────────────
-  const nodeElMap = new Map<string, HTMLElement>();
-
-  for (const [slug, note] of Object.entries(notesData)) {
-    const pos = positions.get(slug);
-    if (!pos) continue;
-    const isCentral = slug === CENTRAL_SLUG;
-
-    const div = document.createElement('div');
-    div.className = 'fn-node' + (isCentral ? ' fn-node--central' : '');
-    div.dataset.slug = slug;
-    div.style.transform = `translate(calc(${pos.x}px - 50%), calc(${pos.y}px - 50%))`;
-
-    const btn = document.createElement('button');
-    btn.className = 'fn-node__btn';
-    btn.setAttribute('aria-label', `Read: ${note.title}`);
-    btn.textContent = note.title;
-
-    div.appendChild(btn);
-    canvasInner.appendChild(div);
-    nodeElMap.set(slug, div);
-  }
-
-  // ── DRAW SVG LINES ──────────────────────────────────────────────────────
-  connectionPairs.forEach(([a, b]) => {
-    const pa = positions.get(a), pb = positions.get(b);
-    if (!pa || !pb) return;
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', String(pa.x));
-    line.setAttribute('y1', String(pa.y));
-    line.setAttribute('x2', String(pb.x));
-    line.setAttribute('y2', String(pb.y));
-    line.setAttribute('stroke', 'rgba(160, 130, 90, 0.28)');
-    line.setAttribute('stroke-width', '1');
-    linesG.appendChild(line);
-  });
-
-  // ── PAN / ZOOM STATE ────────────────────────────────────────────────────
-  let zoom = 1.0, panX = 0, panY = 0;
-
-  function applyTransform() {
-    canvasInner!.style.transform = `scale(${zoom}) translate(${panX}px, ${panY}px)`;
-  }
-
-  function initTransform() {
-    const rect = canvasRoot!.getBoundingClientRect();
-    panX = rect.width / 2;
-    panY = rect.height / 2;
-    zoom = 1.0;
-    applyTransform();
-  }
-
-  requestAnimationFrame(() => requestAnimationFrame(initTransform));
-
-  // ── MOUSE PAN ───────────────────────────────────────────────────────────
-  let isDragging = false;
-  let dragStartX = 0, dragStartY = 0;
-  let startPanX  = 0, startPanY  = 0;
-  let downX = 0, downY = 0;
-
-  canvasRoot.addEventListener('mousedown', e => {
-    if ((e.target as Element).closest('.fn-node__btn')) return;
-    isDragging = true;
-    dragStartX = e.clientX; dragStartY = e.clientY;
-    startPanX  = panX;      startPanY  = panY;
-    downX = e.clientX;      downY = e.clientY;
-    canvasRoot!.style.cursor = 'grabbing';
-    e.preventDefault();
-  });
-
-  window.addEventListener('mousemove', e => {
-    if (!isDragging) return;
-    panX = startPanX + (e.clientX - dragStartX) / zoom;
-    panY = startPanY + (e.clientY - dragStartY) / zoom;
-    applyTransform();
-  });
-
-  window.addEventListener('mouseup', e => {
-    if (!isDragging) return;
-    isDragging = false;
-    canvasRoot!.style.cursor = 'grab';
-    const dx = e.clientX - downX, dy = e.clientY - downY;
-    if (Math.sqrt(dx * dx + dy * dy) < 5 && !(e.target as Element).closest('.fn-node')) {
-      closePanel();
-    }
-  });
-
-  // ── WHEEL ZOOM ──────────────────────────────────────────────────────────
-  canvasRoot.addEventListener('wheel', e => {
-    e.preventDefault();
-    const rect = canvasRoot!.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const my = e.clientY - rect.top;
-    const oldZoom = zoom;
-    zoom = Math.max(0.3, Math.min(3.0, zoom + e.deltaY * -0.001));
-    panX += mx * (1 / zoom - 1 / oldZoom);
-    panY += my * (1 / zoom - 1 / oldZoom);
-    applyTransform();
-  }, { passive: false });
-
-  // ── TOUCH ───────────────────────────────────────────────────────────────
-  let touchStart: Touch[] = [];
-  let touchPan = { x: 0, y: 0 };
-  let touchZoomStart = 1;
-
-  canvasRoot.addEventListener('touchstart', e => {
-    e.preventDefault();
-    touchStart = Array.from(e.touches);
-    touchPan = { x: panX, y: panY };
-    touchZoomStart = zoom;
-  }, { passive: false });
-
-  canvasRoot.addEventListener('touchmove', e => {
-    e.preventDefault();
-    const ts = Array.from(e.touches);
-    if (ts.length === 1 && touchStart.length >= 1) {
-      panX = touchPan.x + (ts[0].clientX - touchStart[0].clientX) / zoom;
-      panY = touchPan.y + (ts[0].clientY - touchStart[0].clientY) / zoom;
-    } else if (ts.length === 2 && touchStart.length >= 2) {
-      const prevDist = Math.hypot(touchStart[1].clientX - touchStart[0].clientX, touchStart[1].clientY - touchStart[0].clientY);
-      const currDist = Math.hypot(ts[1].clientX - ts[0].clientX, ts[1].clientY - ts[0].clientY);
-      if (prevDist > 0) {
-        const rect = canvasRoot!.getBoundingClientRect();
-        const mx = (ts[0].clientX + ts[1].clientX) / 2 - rect.left;
-        const my = (ts[0].clientY + ts[1].clientY) / 2 - rect.top;
-        const newZoom = Math.max(0.3, Math.min(3.0, touchZoomStart * (currDist / prevDist)));
-        panX = touchPan.x + mx * (1 / newZoom - 1 / touchZoomStart);
-        panY = touchPan.y + my * (1 / newZoom - 1 / touchZoomStart);
-        zoom = newZoom;
-      }
-    }
-    applyTransform();
-  }, { passive: false });
-
-  // ── READING PANEL ───────────────────────────────────────────────────────
-  let activeSlug: string | null = null;
-
-  function esc(s: string) {
-    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
-
-  function openPanel(slug: string) {
-    const note = notesData[slug];
-    if (!note) return;
-    if (activeSlug) nodeElMap.get(activeSlug)?.classList.remove('is-active');
-    activeSlug = slug;
-    nodeElMap.get(slug)?.classList.add('is-active');
-
-    const paras = note.body.map(p => `<p>${esc(p)}</p>`).join('');
-    const relBtns = note.connections
-      .filter(s => notesData[s])
-      .map(s => `<button class="fn-panel-nav-btn" data-target="${esc(s)}">${esc(notesData[s].title)}</button>`)
-      .join('');
-
-    panelContent!.innerHTML = `
-      <p class="fn-panel__eyebrow">Field Note</p>
-      <h2 class="fn-panel__title">${esc(note.title)}</h2>
-      <p class="fn-panel__excerpt">${esc(note.excerpt)}</p>
-      <div class="fn-panel__body">${paras}</div>
-      ${relBtns ? `<div class="fn-panel__related">
-        <p class="fn-panel__related-label">Related</p>
-        <div class="fn-panel__related-links">${relBtns}</div>
-      </div>` : ''}
-    `;
-
-    panelContent!.querySelectorAll<HTMLElement>('.fn-panel-nav-btn').forEach(btn => {
-      btn.addEventListener('click', () => openPanel(btn.dataset.target!));
-    });
-
-    panel!.querySelector('.fn-panel__scroll')!.scrollTop = 0;
-    panel!.classList.add('is-open');
-    panel!.setAttribute('aria-hidden', 'false');
-  }
-
-  function closePanel() {
-    if (!panel!.classList.contains('is-open')) return;
-    panel!.classList.remove('is-open');
-    panel!.setAttribute('aria-hidden', 'true');
-    if (activeSlug) {
-      nodeElMap.get(activeSlug)?.classList.remove('is-active');
-      activeSlug = null;
-    }
-  }
-
-  nodeElMap.forEach((el, slug) => {
-    el.querySelector('.fn-node__btn')!.addEventListener('click', e => {
-      e.stopPropagation();
-      if (activeSlug === slug && panel!.classList.contains('is-open')) {
-        closePanel();
-      } else {
-        openPanel(slug);
-      }
-    });
-  });
-
-  panelClose!.addEventListener('click', closePanel);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
-}
-
-// ── INIT ───────────────────────────────────────────────────────────────────
-initMobileAccordion();
-if (!isMobile()) initCanvas();
-
-document.addEventListener('astro:page-load', () => {
-  initMobileAccordion();
-  if (!isMobile()) initCanvas();
-});
-</script>
 
 <style>
   /* ── HEADER ─────────────────────────────────────────────────────────────── */
   .fn-header {
     background: var(--color-charcoal);
     color: var(--color-text-stone);
-    padding-top: calc(var(--nav-height) + var(--space-6));
-    padding-bottom: var(--space-6);
+    padding-top: calc(var(--nav-height) + var(--space-10));
+    padding-bottom: var(--space-10);
     position: relative;
     overflow: hidden;
   }
@@ -430,405 +79,113 @@ document.addEventListener('astro:page-load', () => {
     font-weight: 500;
   }
 
-  .fn-header__sub {
-    font-size: var(--text-sm);
-    color: rgba(242, 237, 231, 0.45);
-    line-height: var(--leading-relaxed);
-  }
-
-  /* ── CANVAS ROOT (desktop viewport) ─────────────────────────────────────── */
-  #canvas-root {
-    width: 100%;
-    height: calc(100vh - var(--nav-height) - 100px);
-    height: calc(100svh - var(--nav-height) - 100px);
-    min-height: 420px;
+  /* ── INTRO ───────────────────────────────────────────────────────────────── */
+  .fn-intro {
     background: var(--color-stone-soft);
-    overflow: hidden;
-    position: relative;
-    cursor: grab;
-    -webkit-user-select: none;
-    user-select: none;
-    touch-action: none;
-  }
-
-  @media (max-width: 767px) {
-    #canvas-root { display: none; }
-  }
-
-  /* ── CANVAS INNER (transform target, zero-size overflow-visible) ──────── */
-  #canvas-inner {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 0;
-    overflow: visible;
-    transform-origin: 0 0;
-    will-change: transform;
-  }
-
-  /* ── SVG CONNECTION LINES ────────────────────────────────────────────────── */
-  #fn-svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 0;
-    overflow: visible;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* ── NODES ───────────────────────────────────────────────────────────────── */
-  .fn-node {
-    position: absolute;
-    min-width: 160px;
-    max-width: 220px;
-    background: #f5f2ed;
-    border: 1px solid rgba(120, 100, 75, 0.35);
-    border-radius: 4px;
-    box-shadow: 0 2px 12px rgba(45, 42, 38, 0.08);
-    z-index: 1;
-    transition: border-color 0.18s ease, box-shadow 0.18s ease;
-    cursor: pointer;
-  }
-
-  .fn-node:hover,
-  .fn-node.is-active {
-    border-color: rgba(120, 100, 75, 0.65);
-    box-shadow: 0 4px 20px rgba(45, 42, 38, 0.15);
-    z-index: 2;
-  }
-
-  .fn-node.is-active {
-    box-shadow: 0 6px 28px rgba(45, 42, 38, 0.20);
-    z-index: 3;
-  }
-
-  .fn-node--central {
-    min-width: 220px;
-    max-width: 280px;
-    border-width: 1.5px;
-    border-color: rgba(120, 100, 75, 0.5);
-    box-shadow: 0 4px 20px rgba(45, 42, 38, 0.12);
-    z-index: 2;
-  }
-
-  .fn-node--central:hover,
-  .fn-node--central.is-active {
-    border-color: rgba(120, 100, 75, 0.80);
-    box-shadow: 0 8px 32px rgba(45, 42, 38, 0.22);
-  }
-
-  .fn-node__btn {
-    width: 100%;
-    padding: 12px 16px;
-    text-align: left;
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 400;
-    line-height: 1.35;
-    color: var(--color-ink);
-    cursor: pointer;
-    display: block;
-  }
-
-  .fn-node--central .fn-node__btn {
-    padding: 16px 24px;
-    font-size: 15px;
-    font-weight: 600;
-  }
-
-  /* ── READING PANEL ───────────────────────────────────────────────────────── */
-  .fn-panel {
-    position: fixed;
-    top: var(--nav-height);
-    right: 0;
-    bottom: 0;
-    width: min(640px, 100vw);
-    background: #faf7f2;
-    border-left: 1px solid rgba(45, 42, 38, 0.12);
-    box-shadow: -8px 0 48px rgba(45, 42, 38, 0.14);
-    transform: translateX(100%);
-    transition: transform 0.36s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 150;
-    display: flex;
-    flex-direction: column;
-    pointer-events: none;
-  }
-
-  .fn-panel.is-open {
-    transform: translateX(0);
-    pointer-events: auto;
-  }
-
-  .fn-panel__close {
-    position: absolute;
-    top: var(--space-5);
-    right: var(--space-5);
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: rgba(45, 42, 38, 0.07);
-    border: 1px solid rgba(45, 42, 38, 0.10);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: rgba(45, 42, 38, 0.50);
-    transition: background 0.15s ease, color 0.15s ease;
-    z-index: 1;
-    flex-shrink: 0;
-  }
-
-  .fn-panel__close:hover {
-    background: rgba(45, 42, 38, 0.14);
-    color: var(--color-ink);
-  }
-
-  .fn-panel__scroll {
-    flex: 1;
-    overflow-y: auto;
-    padding: 48px;
-    padding-bottom: var(--space-20);
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .fn-panel__eyebrow {
-    font-size: var(--text-xs);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-sage);
-    font-weight: 500;
-    margin-bottom: var(--space-4);
-  }
-
-  .fn-panel__title {
-    font-family: var(--font-heading);
-    font-size: clamp(1.6rem, 3vw, 2.3rem);
-    font-weight: 300;
-    letter-spacing: -0.025em;
-    line-height: 1.15;
-    color: var(--color-ink);
-    margin-bottom: var(--space-5);
-  }
-
-  .fn-panel__excerpt {
-    font-size: var(--text-md);
-    font-style: italic;
-    color: rgba(45, 42, 38, 0.55);
-    line-height: var(--leading-relaxed);
-    margin-bottom: var(--space-10);
-    padding-bottom: var(--space-8);
+    padding: var(--space-20) 0 var(--space-16);
     border-bottom: 1px solid rgba(45, 42, 38, 0.10);
   }
 
-  .fn-panel__body p {
-    font-size: var(--text-md);
-    line-height: var(--leading-loose);
-    color: rgba(45, 42, 38, 0.82);
+  .fn-intro__inner {
+    max-width: 680px;
   }
 
-  .fn-panel__body p + p {
+  .fn-intro__lead {
+    font-family: var(--font-heading);
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+    margin-bottom: var(--space-8);
+    line-height: 1.4;
+  }
+
+  .fn-intro__body p {
+    font-size: var(--text-md);
+    line-height: var(--leading-loose);
+    color: rgba(45, 42, 38, 0.75);
+  }
+
+  .fn-intro__body p + p {
     margin-top: var(--space-6);
   }
 
-  .fn-panel__related {
-    margin-top: var(--space-12);
-    padding-top: var(--space-8);
-    border-top: 1px solid rgba(45, 42, 38, 0.10);
+  .fn-intro__transition {
+    margin-top: var(--space-10) !important;
+    color: rgba(45, 42, 38, 0.55) !important;
+    font-size: var(--text-base) !important;
   }
 
-  .fn-panel__related-label {
-    font-size: var(--text-xs);
-    letter-spacing: 0.10em;
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-    font-weight: 500;
-    margin-bottom: var(--space-4);
+  /* ── GRID SECTION ────────────────────────────────────────────────────────── */
+  .fn-grid-section {
+    background: var(--color-stone-soft);
+    padding: var(--space-16) 0 var(--space-32);
   }
 
-  .fn-panel__related-links {
+  /* ── CARD GRID ───────────────────────────────────────────────────────────── */
+  .fn-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: rgba(45, 42, 38, 0.10);
+  }
+
+  @media (max-width: 640px) {
+    .fn-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ── CARD ────────────────────────────────────────────────────────────────── */
+  .fn-card {
+    background: var(--color-stone-soft);
+    padding: var(--space-8);
     display: flex;
     flex-direction: column;
+    gap: var(--space-3);
+    min-height: 220px;
+    text-decoration: none;
+    transition: background var(--dur-base);
+  }
+
+  .fn-card:hover {
+    background: var(--color-stone);
+  }
+
+  .fn-card__tags {
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--space-2);
   }
 
-  .fn-panel-nav-btn {
-    background: none;
-    border: none;
-    border-bottom: 1px solid transparent;
-    padding: 0;
-    cursor: pointer;
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
-    color: var(--color-gold);
-    text-align: left;
-    line-height: 1.5;
-    transition: color 0.15s ease, border-color 0.15s ease;
-  }
-
-  .fn-panel-nav-btn:hover {
-    color: var(--color-rust);
-    border-bottom-color: var(--color-rust);
-  }
-
-  @media (max-width: 767px) {
-    .fn-panel { display: none; }
-  }
-
-  /* ── MOBILE LIST ─────────────────────────────────────────────────────────── */
-  .fn-mobile {
-    display: none;
-    background: var(--color-stone-soft);
-    padding-top: var(--nav-height);
-  }
-
-  @media (max-width: 767px) {
-    .fn-mobile { display: block; }
-  }
-
-  .fn-mobile__header {
-    background: var(--color-charcoal);
-    padding: var(--space-10) var(--space-6) var(--space-8);
-  }
-
-  .fn-mobile__label {
-    font-size: var(--text-xs);
-    letter-spacing: 0.12em;
+  .fn-card__tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.10em;
     text-transform: uppercase;
     color: var(--color-sage);
     font-weight: 500;
-    margin-bottom: var(--space-2);
   }
 
-  .fn-mobile__sub {
-    font-size: var(--text-sm);
-    color: rgba(242, 237, 231, 0.45);
+  .fn-card__tag + .fn-card__tag::before {
+    content: '\00b7';
+    margin-right: var(--space-2);
+    opacity: 0.5;
   }
 
-  .fn-mobile-card {
-    border-bottom: 1px solid rgba(45, 42, 38, 0.10);
-  }
-
-  .fn-mobile-card__trigger {
-    width: 100%;
-    text-align: left;
-    padding: var(--space-6);
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: var(--space-2) var(--space-4);
-    align-items: start;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-
-  .fn-mobile-card__title {
-    grid-column: 1;
+  .fn-card__title {
     font-family: var(--font-heading);
     font-size: var(--text-xl);
     font-weight: 300;
     letter-spacing: -0.02em;
     color: var(--color-ink);
-    line-height: 1.2;
-    display: block;
+    line-height: 1.25;
+    flex: 1;
   }
 
-  .fn-mobile-card__excerpt {
-    grid-column: 1;
+  .fn-card__excerpt {
     font-size: var(--text-sm);
     color: rgba(45, 42, 38, 0.55);
     line-height: var(--leading-relaxed);
-    display: block;
-  }
-
-  .fn-mobile-card__icon {
-    grid-area: 1 / 2 / 3 / 3;
-    width: 18px;
-    height: 18px;
-    position: relative;
-    align-self: start;
-    margin-top: 6px;
-    flex-shrink: 0;
-  }
-
-  .fn-mobile-card__icon::before,
-  .fn-mobile-card__icon::after {
-    content: '';
-    position: absolute;
-    background: rgba(184, 149, 106, 0.6);
-    border-radius: 1px;
-    transition: transform 0.25s ease;
-  }
-
-  .fn-mobile-card__icon::before {
-    width: 14px; height: 1.5px;
-    top: 50%;    left: 2px;
-    transform: translateY(-50%);
-  }
-
-  .fn-mobile-card__icon::after {
-    width: 1.5px; height: 14px;
-    top: 2px;     left: 50%;
-    transform: translateX(-50%);
-  }
-
-  .fn-mobile-card.is-open .fn-mobile-card__icon::before { transform: translateY(-50%) rotate(45deg); }
-  .fn-mobile-card.is-open .fn-mobile-card__icon::after  { transform: translateX(-50%) rotate(45deg); }
-
-  .fn-mobile-card__body {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .fn-mobile-card__body-inner {
-    padding: 0 var(--space-6) var(--space-8);
-    border-top: 1px solid rgba(45, 42, 38, 0.08);
-  }
-
-  .fn-mobile-card__body-inner p {
-    font-size: var(--text-base);
-    line-height: var(--leading-loose);
-    color: rgba(45, 42, 38, 0.80);
-  }
-
-  .fn-mobile-card__body-inner p + p {
-    margin-top: var(--space-5);
-  }
-
-  .fn-mobile-related {
-    margin-top: var(--space-8);
-    padding-top: var(--space-6);
-    border-top: 1px solid rgba(45, 42, 38, 0.08);
-  }
-
-  .fn-mobile-related__label {
-    font-size: var(--text-xs);
-    letter-spacing: 0.10em;
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-    font-weight: 500;
-    margin-bottom: var(--space-3);
-  }
-
-  .fn-mobile-related__btn {
-    display: block;
-    background: none;
-    border: none;
-    border-bottom: 1px solid transparent;
-    padding: var(--space-1) 0;
-    cursor: pointer;
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
-    color: var(--color-gold);
-    text-align: left;
-    transition: color 0.15s ease, border-color 0.15s ease;
-  }
-
-  .fn-mobile-related__btn:hover {
-    color: var(--color-rust);
-    border-bottom-color: var(--color-rust);
   }
 </style>

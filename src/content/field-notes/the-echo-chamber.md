@@ -2,6 +2,7 @@
 title: "The Echo Chamber"
 excerpt: "The regenerative movement risks repeating the very patterns it's trying to transcend."
 connections: ["the-inherited-story", "the-narrow-definition-of-value", "design-as-a-way-of-knowing"]
+tags: ["Lead", "Design"]
 ---
 
 This is one of the things I find hardest to say, because I care deeply about this work.

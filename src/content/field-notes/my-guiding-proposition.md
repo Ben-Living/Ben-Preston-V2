@@ -2,6 +2,7 @@
 title: "My Guiding Proposition"
 excerpt: "The foundation of my ideas and my work."
 connections: ["the-inherited-story", "both-and", "what-living-systems-teach-us", "cooperation-as-strategy", "the-future-is-a-process", "start-where-you-are"]
+tags: ["Lead"]
 ---
 
 We are not only a self experiencing the world from the inside. We are also a fractal of that world itself — nested within it, shaped by it, shaping it in return. This is what our best science points to, and what direct experience confirms when we slow down enough to notice.

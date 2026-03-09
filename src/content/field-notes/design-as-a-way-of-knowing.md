@@ -2,6 +2,7 @@
 title: "Design as a Way of Knowing"
 excerpt: "Design isn't a method applied to problems. It's a way of generating knowledge through practice."
 connections: ["the-inherited-story", "the-echo-chamber", "start-where-you-are"]
+tags: ["Design", "Lead"]
 ---
 
 There's an assumption in most professional life that knowledge comes first and application follows. You study, you plan, you analyse — and then you act, based on what you know.

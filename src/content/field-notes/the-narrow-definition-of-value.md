@@ -2,6 +2,7 @@
 title: "The Narrow Definition of Value"
 excerpt: "By defining value in purely financial terms, we deny our work the opportunity to affect change in the most effective ways."
 connections: ["both-and", "the-echo-chamber", "start-where-you-are"]
+tags: ["Build", "Design"]
 ---
 
 By defining "value" in terms of financial capital exclusively, we deny our interventions the opportunity to affect change in the most effective ways: diversely, across multiple system levels.

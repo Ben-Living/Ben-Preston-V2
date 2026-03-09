@@ -6,6 +6,7 @@ const fieldNotes = defineCollection({
     title: z.string(),
     excerpt: z.string(),
     connections: z.array(z.string()).default([]),
+    tags: z.array(z.enum(['Facilitate', 'Design', 'Build', 'Lead'])).optional().default([]),
   }),
 });
 

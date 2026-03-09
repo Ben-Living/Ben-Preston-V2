@@ -2,6 +2,7 @@
 title: "Start Where You Are"
 excerpt: "We keep looking for the big systemic lever. Often, the most powerful thing we can do is far simpler — and closer to home."
 connections: ["cooperation-as-strategy", "the-future-is-a-process", "both-and", "when-good-intentions-compete", "the-narrow-definition-of-value"]
+tags: ["Lead", "Facilitate"]
 ---
 
 So often are we reminded that we are living in a time of rapid and accelerating change that you'd have to have been living under a particularly dense rock to not know the narrative by heart. I'm not denying it's true. But do we really have a right to harp on about how complex things are when we refuse to do the simple things we know we should be doing?

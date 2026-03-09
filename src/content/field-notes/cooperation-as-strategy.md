@@ -2,6 +2,7 @@
 title: "Cooperation as Strategy"
 excerpt: "Cooperation isn't idealism. It's an evolutionary advantage — and there's hard science behind it."
 connections: ["both-and", "the-inherited-story", "start-where-you-are", "self-interest-not-sacrifice", "when-good-intentions-compete"]
+tags: ["Lead", "Facilitate"]
 ---
 
 There's a version of evolutionary theory that most of us absorbed without realising it: life is competition. Survival of the fittest. Dog eat dog. It's a convenient story for a culture built on market competition, but it's a partial reading of the science at best.

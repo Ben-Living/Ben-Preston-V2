@@ -2,6 +2,7 @@
 title: "The Crisis of Story"
 excerpt: "We face more than a climate crisis. We face a crisis about what we believe ourselves to be."
 connections: ["the-inherited-story", "both-and", "development-as-unveiling"]
+tags: ["Lead"]
 ---
 
 The stories that I was part of growing up told me that the world can be standardised and generalised into generic categories that we all fit into. That story led me to believe that there was such a thing as an "ideal" human — one in perfect physical health, who didn't struggle with mental health, and was utterly boring in every way. That was the image of humanity I carried, and anything that differed was flawed.

@@ -2,6 +2,7 @@
 title: "When Good Intentions Compete"
 excerpt: "The common thread is a need to improve. The problem is that we focus on our individual version of improvement and ignore the shared purpose."
 connections: ["both-and", "cooperation-as-strategy", "start-where-you-are"]
+tags: ["Lead", "Facilitate"]
 ---
 
 What are some of the reasons people are interested in improving the built environment? Off the top of my head: buildings should contribute to our health. They should improve local ecology, not harm it. Operating costs are too high. Organisations want market-leading status. Someone loves cool technology.
