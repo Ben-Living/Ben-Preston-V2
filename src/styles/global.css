@@ -537,6 +537,16 @@ blockquote { font-family: var(--font-heading); font-style: italic; font-weight: 
 .v2-project__years { font-size: var(--text-sm); color: var(--color-text-muted); }
 .v2-project__title { font-family: var(--font-heading); font-size: var(--text-2xl); font-weight: 300; letter-spacing: -0.02em; margin-bottom: var(--space-2); }
 .v2-project__body { font-size: var(--text-base); color: rgba(45, 42, 38, 0.68); line-height: var(--leading-relaxed); }
+.v2-project__link {
+  display: inline-block;
+  margin-top: var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--color-gold);
+  transition: color var(--dur-base);
+}
+.v2-project__link:hover {
+  color: var(--color-rust);
+}
 @media (max-width: 640px) { .v2-project { grid-template-columns: 1fr; } .v2-project__num { display: none; } }
 
 /* ─── ABOUT ──────────────────────────────────────────────────────────────── */
