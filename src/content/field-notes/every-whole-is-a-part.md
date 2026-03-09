@@ -7,7 +7,7 @@ tags: ["Design", "Lead"]
 
 Every living system is simultaneously a whole and a part of a greater whole. My heart is a whole in its own right, and it is a part of the whole that is me. I am a whole, and part of a family, a community, a watershed, a biosphere.
 
-For a given whole living system to become regenerative — whether a watershed, your garden, your family, or your business — the sub-systems that make up that particular whole must be supported to reveal their essence, and then to develop along a trajectory that supports the expression of that essence in service of the health of the whole on which they, and others, co-depend.
+For any living system to thrive — whether a watershed, a family, or a business — the parts that make it up need the conditions to become a fuller expression of what they already are. Not in isolation, but in service of the whole they belong to and depend on.
 
 Through expressing their unique essence, they continually generate the will to engage and re-engage in the ongoing processes of evolutionary change. By doing so in a way that nourishes the whole, they ensure ongoing flourishing for all.
 
