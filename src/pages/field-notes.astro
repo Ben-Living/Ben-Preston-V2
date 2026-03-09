@@ -11,23 +11,28 @@ const notes = allNotes.sort((a, b) => a.data.title.localeCompare(b.data.title));
 
 <Base title="Field Notes" currentPage="/field-notes" navTheme="dark">
 
-  <!-- ── DARK HEADER ──────────────────────────────────────────────────────── -->
+  <!-- ── DARK HEADER WITH INTRO ─────────────────────────────────────────── -->
   <section class="fn-header">
     <TopographyLines id="topo-fn" theme="dark" />
     <div class="container topo-content fn-header__inner">
       <p class="fn-header__eyebrow">Field Notes</p>
+      <p class="fn-header__lead reveal">The proposition that forms the foundation of my ideas and my work.</p>
+      <div class="fn-header__body reveal-group">
+        <p class="reveal">Our best science — across evolutionary biology, complexity science, ecology, embodied cognition, quantum physics — converges on the same finding: we are not separate from the world we inhabit. We are expressions of it. What we do to our context, we do to ourselves. This isn't fringe or poetic — it's mainstream science across multiple disciplines.</p>
+        <p class="reveal">That understanding hasn't found its way through. Our behavioural patterns, habits, modes of governance and organising still operate as though the opposite were true. These notes explore various dimensions of why — the inherited mechanistic story, either/or thinking, the echo chamber, narrow definitions of value.</p>
+      </div>
     </div>
   </section>
 
-  <!-- ── INTRO ──────────────────────────────────────────────────────────────── -->
-  <section class="fn-intro">
-    <div class="container fn-intro__inner">
-      <p class="fn-intro__lead reveal">The proposition that forms the foundation of my ideas and my work.</p>
-      <div class="fn-intro__body reveal-group">
-        <p class="reveal">We are not only a self experiencing the world from the inside. We are also a fractal of that world itself — nested within it, shaped by it, shaping it in return. This is what our best science points to, and what direct experience confirms when we slow down enough to notice.</p>
-        <p class="reveal">Most of our problems — in how we lead, how we collaborate, what we build — trace back to a misunderstanding of this. The work is to gently, persistently reorganise our ways of being and acting to reflect what's actually true. When that happens, everything else gets easier.</p>
-        <p class="reveal fn-intro__transition">Things I'm thinking about, working through, or want to share. Some of these are essays, some are conversations, some are just notes from the field.</p>
+  <!-- ── ROOT + BRIDGE (light background) ───────────────────────────────── -->
+  <section class="fn-bridge">
+    <div class="container fn-bridge__inner">
+      <div class="fn-bridge__body reveal-group">
+        <p class="reveal">At root, there's a tension built into what we are. We each have an individual ego-self — and its development is genuine and necessary. But many traditions recognise a second movement: re-situating that healthy ego within the interdependent reality of its context. We've largely forgotten how to do this, and our economy and social fabric actively disincentivise it. So we stay stuck — bouncing between polarisations of individual and collective interest rather than integrating them. That oscillation shows up everywhere: in our politics, our economics, our organisations, our relationships.</p>
+        <p class="reveal">The reason we bounce between individualism and collectivism is that we treat them as competing claims — as though you have to pick a side. Multi-level selection theory dissolves that framing. It shows that selection operates at multiple levels simultaneously: what's adaptive for the individual and what's adaptive for the group are both real, both operative, both legitimate. The tension between them isn't a flaw — it's the engine of how complex living systems organise. It's always been there, at every scale.</p>
+        <p class="reveal">That reframe is a critical move, because it means the task isn't choosing individual over collective or collective over individual. It's creating the conditions under which they align. My work is focused on creating those conditions, founded in the belief — backed by the Nobel Prize-winning work of Elinor Ostrom — that when we get the conditions right, groups that learn to work with the tension between self-interest and collective interest will consistently outperform those that deny or suppress either side.</p>
       </div>
+      <p class="fn-bridge__transition reveal">Things I'm thinking about, working through, or want to share. Some of these are essays, some are conversations, some are just notes from the field.</p>
     </div>
   </section>
 
@@ -55,12 +60,12 @@ const notes = allNotes.sort((a, b) => a.data.title.localeCompare(b.data.title));
 </Base>
 
 <style>
-  /* ── HEADER ─────────────────────────────────────────────────────────────── */
+  /* ── HEADER (dark, with premise + gap) ────────────────────────────── */
   .fn-header {
     background: var(--color-charcoal);
     color: var(--color-text-stone);
     padding-top: calc(var(--nav-height) + var(--space-10));
-    padding-bottom: var(--space-10);
+    padding-bottom: var(--space-16);
     position: relative;
     overflow: hidden;
   }
@@ -69,6 +74,7 @@ const notes = allNotes.sort((a, b) => a.data.title.localeCompare(b.data.title));
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
+    max-width: 680px;
   }
 
   .fn-header__eyebrow {
@@ -77,44 +83,55 @@ const notes = allNotes.sort((a, b) => a.data.title.localeCompare(b.data.title));
     text-transform: uppercase;
     color: var(--color-sage);
     font-weight: 500;
+    margin-bottom: var(--space-8);
   }
 
-  /* ── INTRO ───────────────────────────────────────────────────────────────── */
-  .fn-intro {
-    background: var(--color-stone-soft);
-    padding: var(--space-20) 0 var(--space-16);
-    border-bottom: 1px solid rgba(45, 42, 38, 0.10);
-  }
-
-  .fn-intro__inner {
-    max-width: 680px;
-  }
-
-  .fn-intro__lead {
+  .fn-header__lead {
     font-family: var(--font-heading);
     font-size: clamp(1.2rem, 2vw, 1.5rem);
     font-weight: 300;
     font-style: italic;
     letter-spacing: -0.015em;
-    color: var(--color-ink);
+    color: rgba(242, 237, 231, 0.90);
     margin-bottom: var(--space-8);
     line-height: 1.4;
   }
 
-  .fn-intro__body p {
+  .fn-header__body p {
+    font-size: var(--text-md);
+    line-height: var(--leading-loose);
+    color: rgba(242, 237, 231, 0.65);
+  }
+
+  .fn-header__body p + p {
+    margin-top: var(--space-6);
+  }
+
+  /* ── BRIDGE (light background, root + bridge text) ────────────────── */
+  .fn-bridge {
+    background: var(--color-stone-soft);
+    padding: var(--space-16) 0 var(--space-10);
+    border-bottom: 1px solid rgba(45, 42, 38, 0.10);
+  }
+
+  .fn-bridge__inner {
+    max-width: 680px;
+  }
+
+  .fn-bridge__body p {
     font-size: var(--text-md);
     line-height: var(--leading-loose);
     color: rgba(45, 42, 38, 0.75);
   }
 
-  .fn-intro__body p + p {
+  .fn-bridge__body p + p {
     margin-top: var(--space-6);
   }
 
-  .fn-intro__transition {
-    margin-top: var(--space-10) !important;
-    color: rgba(45, 42, 38, 0.55) !important;
-    font-size: var(--text-base) !important;
+  .fn-bridge__transition {
+    margin-top: var(--space-10);
+    color: rgba(45, 42, 38, 0.55);
+    font-size: var(--text-base);
   }
 
   /* ── GRID SECTION ────────────────────────────────────────────────────────── */
