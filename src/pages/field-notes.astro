@@ -7,6 +7,14 @@ const allNotes = await getCollection('field-notes');
 
 // Sort alphabetically by title for a stable, readable order
 const notes = allNotes.sort((a, b) => a.data.title.localeCompare(b.data.title));
+
+// Render all note content at build time
+const renderedNotes = await Promise.all(
+  notes.map(async (note) => {
+    const { Content } = await note.render();
+    return { ...note, Content };
+  })
+);
 ---
 
 <Base title="Field Notes" currentPage="/field-notes" navTheme="dark">
@@ -40,22 +48,58 @@ const notes = allNotes.sort((a, b) => a.data.title.localeCompare(b.data.title));
   <section class="fn-grid-section">
     <div class="container">
       <div class="fn-cards">
-        {notes.map(note => (
-          <a href={`/field-notes/${note.slug}`} class="fn-card">
-            {note.data.tags && note.data.tags.length > 0 && (
-              <div class="fn-card__tags">
-                {note.data.tags.map((tag: string) => (
-                  <span class="fn-card__tag">{tag}</span>
-                ))}
+        {renderedNotes.map(note => (
+          <div class="fn-card" data-note={note.slug}>
+            <button class="fn-card__header" aria-expanded="false">
+              {note.data.tags && note.data.tags.length > 0 && (
+                <div class="fn-card__tags">
+                  {note.data.tags.map((tag: string) => (
+                    <span class="fn-card__tag">{tag}</span>
+                  ))}
+                </div>
+              )}
+              <h2 class="fn-card__title">{note.data.title}</h2>
+              <p class="fn-card__excerpt">{note.data.excerpt}</p>
+            </button>
+            <div class="fn-card__body" hidden>
+              <div class="fn-card__content">
+                <note.Content />
               </div>
-            )}
-            <h2 class="fn-card__title">{note.data.title}</h2>
-            <p class="fn-card__excerpt">{note.data.excerpt}</p>
-          </a>
+            </div>
+          </div>
         ))}
       </div>
     </div>
   </section>
+
+<script>
+  document.querySelectorAll('.fn-card__header').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('.fn-card');
+      const body = card.querySelector('.fn-card__body');
+      const isOpen = !body.hidden;
+
+      // Close all other open cards
+      document.querySelectorAll('.fn-card__body:not([hidden])').forEach(openBody => {
+        if (openBody !== body) {
+          openBody.hidden = true;
+          openBody.closest('.fn-card').querySelector('.fn-card__header').setAttribute('aria-expanded', 'false');
+          openBody.closest('.fn-card').classList.remove('is-open');
+        }
+      });
+
+      // Toggle this card
+      body.hidden = isOpen;
+      btn.setAttribute('aria-expanded', String(!isOpen));
+      card.classList.toggle('is-open', !isOpen);
+
+      // Scroll card into view if opening
+      if (!isOpen) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+  });
+</script>
 
 </Base>
 
@@ -157,17 +201,59 @@ const notes = allNotes.sort((a, b) => a.data.title.localeCompare(b.data.title));
   /* ── CARD ────────────────────────────────────────────────────────────────── */
   .fn-card {
     background: var(--color-stone-soft);
-    padding: var(--space-8);
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
     min-height: 220px;
-    text-decoration: none;
     transition: background var(--dur-base);
   }
 
   .fn-card:hover {
     background: var(--color-stone);
+  }
+
+  .fn-card.is-open {
+    grid-column: 1 / -1;
+    min-height: auto;
+    background: var(--color-stone);
+  }
+
+  .fn-card__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-8);
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: inherit;
+    flex: 1;
+  }
+
+  /* ── EXPANDED BODY ───────────────────────────────────────────────────── */
+  .fn-card__body {
+    padding: 0 var(--space-8) var(--space-10);
+  }
+
+  .fn-card__content {
+    max-width: 640px;
+  }
+
+  .fn-card__content :global(p) {
+    font-size: var(--text-md);
+    line-height: var(--leading-loose);
+    margin-bottom: var(--space-6);
+    color: rgba(45, 42, 38, 0.82);
+  }
+
+  .fn-card__content :global(p:first-child) {
+    font-family: var(--font-heading);
+    font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+    font-weight: 300;
+    line-height: 1.55;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
   }
 
   .fn-card__tags {
