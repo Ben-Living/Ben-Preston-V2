@@ -523,39 +523,20 @@ blockquote { font-family: var(--font-heading); font-style: italic; font-weight: 
 .v2-project-list { background: var(--color-stone-soft); }
 .v2-project {
   display: grid;
-  grid-template-columns: 120px 1fr 340px;
-  gap: var(--space-12);
+  grid-template-columns: 80px 1fr;
+  gap: var(--space-8);
   padding: var(--space-12) 0;
   border-bottom: 1px solid rgba(45, 42, 38, 0.1);
   align-items: start;
 }
 .v2-project:first-child { border-top: 1px solid rgba(45, 42, 38, 0.1); }
 .v2-project__num { font-family: var(--font-heading); font-size: var(--text-5xl); font-weight: 300; color: rgba(45, 42, 38, 0.1); line-height: 1; letter-spacing: -0.04em; }
+.v2-project__content { display: flex; flex-direction: column; }
+.v2-project__meta { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--space-4); }
+.v2-project__tag { font-size: var(--text-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-sage); font-weight: 500; }
+.v2-project__years { font-size: var(--text-sm); color: var(--color-text-muted); }
 .v2-project__title { font-family: var(--font-heading); font-size: var(--text-2xl); font-weight: 300; letter-spacing: -0.02em; margin-bottom: var(--space-2); }
-.v2-project__tag { font-size: var(--text-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-sage); font-weight: 500; margin-bottom: var(--space-4); display: block; }
 .v2-project__body { font-size: var(--text-base); color: rgba(45, 42, 38, 0.68); line-height: var(--leading-relaxed); }
-.v2-project__img-placeholder {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: var(--color-stone-deep);
-  margin-bottom: var(--space-6);
-  position: relative;
-  overflow: hidden;
-}
-.v2-project__img-placeholder::after {
-  content: 'Image coming';
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--text-xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(45, 42, 38, 0.28);
-}
-.v2-project__years { font-size: var(--text-sm); color: var(--color-text-muted); padding-top: var(--space-4); }
-@media (max-width: 1024px) { .v2-project { grid-template-columns: 80px 1fr; } .v2-project__years { display: none; } }
 @media (max-width: 640px) { .v2-project { grid-template-columns: 1fr; } .v2-project__num { display: none; } }
 
 /* ─── ABOUT ──────────────────────────────────────────────────────────────── */

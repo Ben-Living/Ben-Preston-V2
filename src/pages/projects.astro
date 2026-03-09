@@ -28,14 +28,13 @@ const projects = [
       {projects.map(p => (
         <article class="v2-project reveal">
           <span class="v2-project__num">{p.num}</span>
-          <div>
-            <div class="v2-project__img-placeholder" aria-hidden="true"></div>
-            <span class="v2-project__tag">{p.tag}</span>
+          <div class="v2-project__content">
+            <div class="v2-project__meta">
+              <span class="v2-project__tag">{p.tag}</span>
+              <span class="v2-project__years">{p.years}</span>
+            </div>
             <h2 class="v2-project__title">{p.title}</h2>
             <p class="v2-project__body">{p.body}</p>
-          </div>
-          <div>
-            <p class="v2-project__years">{p.years}</p>
           </div>
         </article>
       ))}
